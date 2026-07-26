@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Schedule Editor</title>
+    <title>מערכת דיווחים</title>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
             --primary-hover: #4f46e5;
+            --success: #22c55e;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e2937;
+            --text-sub: #64748b;
             --border: #e2e8f0;
         }
 
@@ -30,7 +32,7 @@
         .card {
             background: var(--card-bg);
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             padding: 2rem;
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -42,7 +44,7 @@
         .form-group { margin-bottom: 1.2rem; }
         label { display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; }
 
-        input, select {
+        input, textarea, select {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid var(--border);
@@ -50,28 +52,40 @@
             font-size: 1rem;
             box-sizing: border-box;
             font-family: inherit;
-            background: white;
         }
 
-        .days-grid {
+        .category-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             background: #f1f5f9;
             padding: 12px;
             border-radius: 16px;
-            margin-bottom: 1.2rem;
         }
 
-        .day-item {
+        .chip {
+            cursor: pointer;
+            padding: 10px;
             background: white;
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .day-item label { font-size: 0.8rem; margin-bottom: 3px; color: #64748b; }
-        .day-item select { padding: 0.4rem; font-size: 0.9rem; border: 1px solid var(--border); }
+        .chip input { display: none; }
+
+        .chip:has(input:checked) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
         button {
             width: 100%;
@@ -83,6 +97,7 @@
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
+            margin-top: 1rem;
             transition: background 0.2s;
         }
 
@@ -103,202 +118,176 @@
 
 <div class="card">
     <header>
-        <h2>Weekly Schedule Editor</h2>
+        <h2>דיווח נתונים</h2>
     </header>
 
-    <form id="scheduleForm">
+    <form id="sheetForm">
         <div class="form-group">
-            <label for="employeeName">Select / Type Employee Name</label>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="employeeName" list="namesList" placeholder="Type name..." required>
-                <button type="button" id="loadBtn" style="width: 130px; margin-top: 0; padding: 0.5rem; font-size: 0.95rem;">Load Data</button>
-            </div>
-            <datalist id="namesList">
-                <!-- Add your employee names here matching Column A -->
-                <option value="אור שמונוב">
-                <option value="אורטל פיטוסי">
-                <option value="אייל ח'יר">
-            </datalist>
+            <label for="date">תאריך</label>
+            <input type="date" id="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="agentName">שם הנציג/ה</label>
+            <select id="agentName" required>
+                <option value="" disabled selected>טוען נציגים מהגיליון...</option>
+            </select>
         </div>
 
-        <div class="days-grid">
-            <div class="day-item">
-                <label>Sunday</label>
-                <select id="sun">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
-            </div>
-            <div class="day-item">
-                <label>Monday</label>
-                <select id="mon">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
-            </div>
-            <div class="day-item">
-                <label>Tuesday</label>
-                <select id="tue">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
-            </div>
-            <div class="day-item">
-                <label>Wednesday</label>
-                <select id="wed">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
-            </div>
-            <div class="day-item">
-                <label>Thursday</label>
-                <select id="thu">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
-            </div>
-            <div class="day-item">
-                <label>Friday</label>
-                <select id="fri">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
-            </div>
-            <div class="day-item" style="grid-column: span 2;">
-                <label>Saturday</label>
-                <select id="sat">
-                    <option value="">-- Choose --</option>
-                    <option value="Option 1">Option 1</option>
-                    <option value="Option 2">Option 2</option>
-                    <option value="Option 3">Option 3</option>
-                </select>
+        <div class="form-group">
+            <label>קטגוריות</label>
+            <div class="category-container">
+                <label class="chip"><input type="checkbox" name="category" value="חיובי">חיובי</label>
+                <label class="chip"><input type="checkbox" name="category" value="משמעת">משמעת</label>
+                <label class="chip"><input type="checkbox" name="category" value="מקצועי">מקצועי</label>
+                <label class="chip"><input type="checkbox" name="category" value="איחור">איחור</label>
+                <label class="chip"><input type="checkbox" name="category" value="חוסר">חוסר</label>
+                <label class="chip"><input type="checkbox" name="category" value="התנהלות">התנהלות</label>
             </div>
         </div>
+        
+        <div class="form-group">
+            <label for="description">תיאור המקרה</label>
+            <textarea id="description" rows="3" placeholder="פרט כאן..."></textarea>
+        </div>
 
-        <button type="submit" id="submitBtn">Save Changes</button>
+        <div class="form-group">
+            <label for="link">קישור</label>
+            <input type="url" id="link" placeholder="https://...">
+        </div>
+
+        <div class="form-group">
+            <label for="statusInput">סטטוס / טיפול</label>
+            <input type="text" id="statusInput" placeholder="מה בוצע?">
+        </div>
+        
+        <button type="submit" id="submitBtn">שלח עדכון</button>
     </form>
     <div id="status" class="status-msg"></div>
 </div>
 
 <script>
-    // Paste your Web App deployment URL here
-    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz2cMrxFuQdghae_RVFmLnpUEdwD0BaGc40DZQ448v2gmjvmwxu9azT4H5KMlNhSd56/exec';
+    
+    let sheetDataCache = [];
+    const daysMap = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת'];
 
-    const form = document.getElementById('scheduleForm');
-    const loadBtn = document.getElementById('loadBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const status = document.getElementById('status');
+    document.getElementById('date').valueAsDate = new Date();
 
-    // Load existing choices when clicking "Load Data"
-    loadBtn.onclick = async () => {
-        const employee = document.getElementById('employeeName').value.trim();
-        if (!employee) {
-            alert('Please enter or select an employee name first.');
-            return;
-        }
+    const form = document.getElementById('sheetForm');
+    const btn = document.getElementById('submitBtn');
+    const statusMsg = document.getElementById('status');
+    const agentSelect = document.getElementById('agentName');
+    const dateInput = document.getElementById('date');
 
-        loadBtn.disabled = true;
-        loadBtn.innerText = 'Loading...';
-        status.style.display = 'none';
-
+    // Load data directly from Google Spreadsheet
+    async function loadSheetData() {
         try {
-            const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(employee)}`);
-            const result = await response.json();
-
-            if (result.status === 'success' && result.schedule) {
-                document.getElementById('sun').value = result.schedule.sun || '';
-                document.getElementById('mon').value = result.schedule.mon || '';
-                document.getElementById('tue').value = result.schedule.tue || '';
-                document.getElementById('wed').value = result.schedule.wed || '';
-                document.getElementById('thu').value = result.schedule.thu || '';
-                document.getElementById('fri').value = result.schedule.fri || '';
-                document.getElementById('sat').value = result.schedule.sat || '';
-
-                status.style.display = 'block';
-                status.style.color = '#166534';
-                status.style.backgroundColor = '#dcfce7';
-                status.innerText = '✓ Data loaded successfully!';
-            } else {
-                ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
-                    document.getElementById(day).value = '';
-                });
-                status.style.display = 'block';
-                status.style.color = '#991b1b';
-                status.style.backgroundColor = '#fee2e2';
-                status.innerText = 'Employee not found in sheet.';
-            }
-        } catch (error) {
-            status.style.display = 'block';
-            status.style.color = '#991b1b';
-            status.style.backgroundColor = '#fee2e2';
-            status.innerText = 'Error loading data.';
-        } finally {
-            loadBtn.disabled = false;
-            loadBtn.innerText = 'Load Data';
+            const res = await fetch(scriptURL);
+            sheetDataCache = await res.json();
+            populateAgentDropdown();
+            updateSelectedOption();
+        } catch (err) {
+            console.error('Error fetching sheet data:', err);
+            agentSelect.innerHTML = '<option value="" disabled>שגיאה שטעינת הנתונים</option>';
         }
-    };
+    }
 
-    // Update existing row when clicking "Save Changes"
+    function populateAgentDropdown() {
+        agentSelect.innerHTML = '<option value="" disabled selected>בחר נציג/ה...</option>';
+        sheetDataCache.forEach(row => {
+            if (row.name) {
+                const opt = document.createElement('option');
+                opt.value = row.name;
+                opt.textContent = row.name;
+                agentSelect.appendChild(opt);
+            }
+        });
+    }
+
+    // Lookup corresponding cell based on selected Name and Date (Day of the week)
+    function updateSelectedOption() {
+        const selectedName = agentSelect.value;
+        const rawDate = dateInput.value;
+
+        if (!selectedName || !rawDate) return;
+
+        const dateObj = new Date(rawDate);
+        const dayName = daysMap[dateObj.getDay()];
+
+        const agentData = sheetDataCache.find(row => row.name === selectedName);
+        if (agentData && agentData[dayName]) {
+            const optionVal = agentData[dayName];
+            
+            // Highlight/select matching category chip if it exists
+            const checkbox = document.querySelector(`input[name="category"][value="${optionVal}"]`);
+            if (checkbox) {
+                document.querySelectorAll('input[name="category"]').forEach(cb => cb.checked = false);
+                checkbox.checked = true;
+            }
+            
+            // Set status input field with value from cell
+            document.getElementById('statusInput').value = optionVal;
+        }
+    }
+
+    agentSelect.addEventListener('change', updateSelectedOption);
+    dateInput.addEventListener('change', updateSelectedOption);
+
     form.onsubmit = async (e) => {
         e.preventDefault();
-
-        const employee = document.getElementById('employeeName').value.trim();
-        if (!employee) {
-            alert('Please enter an employee name.');
-            return;
+        
+        btn.disabled = true;
+        btn.innerText = 'שולח...';
+        statusMsg.style.display = 'none';
+        
+        const rawDate = dateInput.value;
+        let formattedDate = "";
+        if (rawDate) {
+            const d = new Date(rawDate);
+            formattedDate = d.getDate() + '/' + (d.getMonth() + 1);
         }
 
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Saving...';
-        status.style.display = 'none';
+        const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
+            .map(cb => cb.value).join(', ');
 
-        const payload = {
-            employee: employee,
-            schedule: {
-                sun: document.getElementById('sun').value,
-                mon: document.getElementById('mon').value,
-                tue: document.getElementById('tue').value,
-                wed: document.getElementById('wed').value,
-                thu: document.getElementById('thu').value,
-                fri: document.getElementById('fri').value,
-                sat: document.getElementById('sat').value
-            }
+        const data = {
+            date: formattedDate,
+            agentName: agentSelect.value,
+            category: selectedCategories,
+            description: document.getElementById('description').value,
+            link: document.getElementById('link').value,
+            status: document.getElementById('statusInput').value
         };
 
         try {
-            await fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
+            await fetch(scriptURL, { 
+                method: 'POST', 
+                mode: 'no-cors', 
                 cache: 'no-cache',
-                body: JSON.stringify(payload)
+                body: JSON.stringify(data) 
             });
 
-            status.style.display = 'block';
-            status.style.color = '#166534';
-            status.style.backgroundColor = '#dcfce7';
-            status.innerText = '✓ Changes saved successfully!';
+            statusMsg.style.display = 'block';
+            statusMsg.style.color = '#166534';
+            statusMsg.style.backgroundColor = '#dcfce7';
+            statusMsg.innerText = '✓ נשלח בהצלחה לגיליון!';
+            
+            form.reset();
+            dateInput.valueAsDate = new Date();
         } catch (error) {
-            status.style.display = 'block';
-            status.style.color = '#991b1b';
-            status.style.backgroundColor = '#fee2e2';
-            status.innerText = 'Error saving changes';
+            statusMsg.style.display = 'block';
+            statusMsg.style.color = '#991b1b';
+            statusMsg.style.backgroundColor = '#fee2e2';
+            statusMsg.innerText = 'שגיאה בשליחה';
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Save Changes';
+            btn.disabled = false;
+            btn.innerText = 'שלח עדכון';
         }
     };
+
+    // Load data on page init
+    loadSheetData();
 </script>
 
 </body>

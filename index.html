@@ -2,293 +2,381 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מערכת דיווחים</title>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>דיווח משמרות שבועי</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --success: #22c55e;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e2937;
-            --text-sub: #64748b;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: 'Assistant', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
+        * {
+            box-sizing: border-box;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
+            padding: 0;
+            touch-action: manipulation;
         }
 
-        .card {
-            background: var(--card-bg);
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .app-container {
             width: 100%;
             max-width: 480px;
-            padding: 2rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
-        header { text-align: center; margin-bottom: 1.5rem; }
-        h2 { margin: 0; color: var(--primary); font-size: 1.6rem; font-weight: 800; }
-
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-
-        .category-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: #f1f5f9;
+            height: 100%;
+            margin: 0 auto;
             padding: 12px;
-            border-radius: 16px;
-        }
-
-        .chip {
-            cursor: pointer;
-            padding: 10px;
-            background: white;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-align: center;
-            transition: all 0.2s ease;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: center;
+            gap: 10px;
         }
 
-        .chip input { display: none; }
-
-        .chip:has(input:checked) {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        button {
-            width: 100%;
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem;
-            border: none;
+        .header-section {
+            background: #ffffff;
+            padding: 12px;
             border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            font-size: 1.15rem;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .week-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+            height: 46px;
+            padding: 0 12px;
+            font-size: 1.05rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            appearance: none;
+            outline: none;
+            font-weight: 600;
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+
+        select:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .days-container {
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .day-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .day-row:last-child {
+            border-bottom: none;
+        }
+
+        .day-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .options-group {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .opt-btn {
+            width: 60px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .opt-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .opt-btn.office.active {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: #2563eb;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .opt-btn.home.active {
+            background-color: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+            box-shadow: 0 1px 3px rgba(22, 163, 74, 0.15);
+        }
+
+        .opt-btn.night.active {
+            background-color: #f5f3ff;
+            border-color: #8b5cf6;
+            color: #7c3aed;
+            box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .footer-section {
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: background 0.2s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: all 0.15s ease;
         }
 
-        button:hover:not(:disabled) { background-color: var(--primary-hover); }
-        button:disabled { background-color: #cbd5e1; }
-
-        .status-msg {
-            margin-top: 1rem;
-            text-align: center;
-            padding: 12px;
-            border-radius: 10px;
-            display: none;
-            font-weight: 600;
+        .submit-btn:active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: scale(0.99);
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <header>
-        <h2>דיווח נתונים</h2>
-    </header>
-
-    <form id="sheetForm">
-        <div class="form-group">
-            <label for="date">תאריך</label>
-            <input type="date" id="date" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="agentName">שם הנציג/ה</label>
-            <select id="agentName" required>
-                <option value="" disabled selected>טוען נציגים מהגיליון...</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>קטגוריות</label>
-            <div class="category-container">
-                <label class="chip"><input type="checkbox" name="category" value="חיובי">חיובי</label>
-                <label class="chip"><input type="checkbox" name="category" value="משמעת">משמעת</label>
-                <label class="chip"><input type="checkbox" name="category" value="מקצועי">מקצועי</label>
-                <label class="chip"><input type="checkbox" name="category" value="איחור">איחור</label>
-                <label class="chip"><input type="checkbox" name="category" value="חוסר">חוסר</label>
-                <label class="chip"><input type="checkbox" name="category" value="התנהלות">התנהלות</label>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1>דיווח משמרות לשבוע הבא</h1>
+            <div class="week-subtitle" id="weekDatesRange"></div>
+            <div class="select-wrapper">
+                <select id="employeeName" onchange="fetchEmployeeSchedule()">
+                    <option value="" disabled selected>-- בחר שם עובד --</option>
+                    <option value="Angolina Mattar">Angolina Mattar</option>
+                    <option value="Arifenur Uslu">Arifenur Uslu</option>
+                    <option value="Carlos Salloum">Carlos Salloum</option>
+                    <option value="Johaina Swaed">Johaina Swaed</option>
+                    <option value="Jwana Qassis">Jwana Qassis</option>
+                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
+                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
+                    <option value="Mai Zbedat">Mai Zbedat</option>
+                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
+                    <option value="Malak Sabbah">Malak Sabbah</option>
+                    <option value="Maya Haddad">Maya Haddad</option>
+                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
+                    <option value="Or Shomonov">Or Shomonov</option>
+                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
+                    <option value="Pearla Deek">Pearla Deek</option>
+                    <option value="Rafael Simanduev">Rafael Simanduev</option>
+                    <option value="Rula Darawshi">Rula Darawshi</option>
+                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
+                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
+                    <option value="Suhail Mustafa">Suhail Mustafa</option>
+                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
+                    <option value="Yazan kezil">Yazan kezil</option>
+                    <option value="Youssef Daoud">Youssef Daoud</option>
+                </select>
             </div>
         </div>
-        
-        <div class="form-group">
-            <label for="description">תיאור המקרה</label>
-            <textarea id="description" rows="3" placeholder="פרט כאן..."></textarea>
+
+        <!-- 7 Days Container -->
+        <div class="days-container" id="daysContainer"></div>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <button class="submit-btn" onclick="submitData()">שמור נתונים</button>
         </div>
+    </div>
 
-        <div class="form-group">
-            <label for="link">קישור</label>
-            <input type="url" id="link" placeholder="https://...">
-        </div>
-
-        <div class="form-group">
-            <label for="statusInput">סטטוס / טיפול</label>
-            <input type="text" id="statusInput" placeholder="מה בוצע?">
-        </div>
-        
-        <button type="submit" id="submitBtn">שלח עדכון</button>
-    </form>
-    <div id="status" class="status-msg"></div>
-</div>
-
-<script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz2cMrxFuQdghae_RVFmLnpUEdwD0BaGc40DZQ448v2gmjvmwxu9azT4H5KMlNhSd56/exec';
-    
-    let sheetDataCache = [];
-    const daysMap = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת'];
-
-    document.getElementById('date').valueAsDate = new Date();
-
-    const form = document.getElementById('sheetForm');
-    const btn = document.getElementById('submitBtn');
-    const statusMsg = document.getElementById('status');
-    const agentSelect = document.getElementById('agentName');
-    const dateInput = document.getElementById('date');
-
-    // Load data directly from Google Spreadsheet
-    async function loadSheetData() {
-        try {
-            const res = await fetch(scriptURL);
-            sheetDataCache = await res.json();
-            populateAgentDropdown();
-            updateSelectedOption();
-        } catch (err) {
-            console.error('Error fetching sheet data:', err);
-            agentSelect.innerHTML = '<option value="" disabled>שגיאה שטעינת הנתונים</option>';
+    <script>
+        // Calculate and display current week range (Sunday to Saturday)
+        function initWeekDates() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 for Sunday
+            const sunday = new Date(now);
+            sunday.setDate(now.getDate() - dayOfWeek);
+            
+            const saturday = new Date(sunday);
+            saturday.setDate(sunday.getDate() + 6);
+            
+            const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
+            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)}-${formatDate(saturday)}`;
         }
-    }
+        initWeekDates();
 
-    function populateAgentDropdown() {
-        agentSelect.innerHTML = '<option value="" disabled selected>בחר נציג/ה...</option>';
-        sheetDataCache.forEach(row => {
-            if (row.name) {
-                const opt = document.createElement('option');
-                opt.value = row.name;
-                opt.textContent = row.name;
-                agentSelect.appendChild(opt);
-            }
+        const days = [
+            { name: "ראשון", id: "sun" },
+            { name: "שני", id: "mon" },
+            { name: "שלישי", id: "tue" },
+            { name: "רביעי", id: "wed" },
+            { name: "חמישי", id: "thu" },
+            { name: "שישי", id: "fri" },
+            { name: "שבת", id: "sat" }
+        ];
+
+        const container = document.getElementById('daysContainer');
+
+        days.forEach(day => {
+            const row = document.createElement('div');
+            row.className = 'day-row';
+            row.innerHTML = `
+                <span class="day-label">${day.name}</span>
+                <div class="options-group" data-day="${day.id}">
+                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="עובד מהמשרד">
+                        <i class="fa-solid fa-building"></i>
+                    </button>
+                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="עובד מהבית">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
+                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="משמרת לילה">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
         });
-    }
 
-    // Lookup corresponding cell based on selected Name and Date (Day of the week)
-    function updateSelectedOption() {
-        const selectedName = agentSelect.value;
-        const rawDate = dateInput.value;
+        const schedule = {};
+        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
 
-        if (!selectedName || !rawDate) return;
+        // Function to fetch and display existing data from Google Sheets
+        async function fetchEmployeeSchedule() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) return;
 
-        const dateObj = new Date(rawDate);
-        const dayName = daysMap[dateObj.getDay()];
-
-        const agentData = sheetDataCache.find(row => row.name === selectedName);
-        if (agentData && agentData[dayName]) {
-            const optionVal = agentData[dayName];
-            
-            // Highlight/select matching category chip if it exists
-            const checkbox = document.querySelector(`input[name="category"][value="${optionVal}"]`);
-            if (checkbox) {
-                document.querySelectorAll('input[name="category"]').forEach(cb => cb.checked = false);
-                checkbox.checked = true;
-            }
-            
-            // Set status input field with value from cell
-            document.getElementById('statusInput').value = optionVal;
-        }
-    }
-
-    agentSelect.addEventListener('change', updateSelectedOption);
-    dateInput.addEventListener('change', updateSelectedOption);
-
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        
-        btn.disabled = true;
-        btn.innerText = 'שולח...';
-        statusMsg.style.display = 'none';
-        
-        const rawDate = dateInput.value;
-        let formattedDate = "";
-        if (rawDate) {
-            const d = new Date(rawDate);
-            formattedDate = d.getDate() + '/' + (d.getMonth() + 1);
-        }
-
-        const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
-            .map(cb => cb.value).join(', ');
-
-        const data = {
-            date: formattedDate,
-            agentName: agentSelect.value,
-            category: selectedCategories,
-            description: document.getElementById('description').value,
-            link: document.getElementById('link').value,
-            status: document.getElementById('statusInput').value
-        };
-
-        try {
-            await fetch(scriptURL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                cache: 'no-cache',
-                body: JSON.stringify(data) 
+            // Reset UI and schedule first
+            days.forEach(day => {
+                const group = document.querySelector(`[data-day="${day.id}"]`);
+                const buttons = group.querySelectorAll('.opt-btn');
+                buttons.forEach(btn => btn.classList.remove('active'));
             });
+            for (let key in schedule) {
+                delete schedule[key];
+            }
 
-            statusMsg.style.display = 'block';
-            statusMsg.style.color = '#166534';
-            statusMsg.style.backgroundColor = '#dcfce7';
-            statusMsg.innerText = '✓ נשלח בהצלחה לגיליון!';
-            
-            form.reset();
-            dateInput.valueAsDate = new Date();
-        } catch (error) {
-            statusMsg.style.display = 'block';
-            statusMsg.style.color = '#991b1b';
-            statusMsg.style.backgroundColor = '#fee2e2';
-            statusMsg.innerText = 'שגיאה בשליחה';
-        } finally {
-            btn.disabled = false;
-            btn.innerText = 'שלח עדכון';
+            try {
+                const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
+                const result = await response.json();
+                
+                if (result.status === 'success' && result.schedule) {
+                    for (const [dayId, type] of Object.entries(result.schedule)) {
+                        const group = document.querySelector(`[data-day="${dayId}"]`);
+                        if (group) {
+                            const selectedBtn = group.querySelector(`.${type}`);
+                            if (selectedBtn) {
+                                selectedBtn.classList.add('active');
+                                schedule[dayId] = type;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching schedule:', error);
+            }
         }
-    };
 
-    // Load data on page init
-    loadSheetData();
-</script>
+        function selectOption(dayId, type) {
+            const name = document.getElementById('employeeName').value;
+            if (!name) {
+                return;
+            }
 
+            const group = document.querySelector(`[data-day="${dayId}"]`);
+            const buttons = group.querySelectorAll('.opt-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const selectedBtn = group.querySelector(`.${type}`);
+            selectedBtn.classList.add('active');
+            
+            schedule[dayId] = type;
+        }
+
+        async function submitData() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) {
+                alert('אנא בחר שם עובד לפני השמירה');
+                return;
+            }
+
+            const payload = {
+                employee: name,
+                schedule: schedule
+            };
+
+            try {
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert('הנתונים נקלטו בהצלחה ונשמרו בטבלה!');
+            } catch (error) {
+                console.error('Error!', error.message);
+                alert('שגיאה בשמירת הנתונים');
+            }
+        }
+
+        document.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
 </body>
 </html>

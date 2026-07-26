@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>דיווח משמרות שבועי</title>
+    <title>Weekly Shift Report</title>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -91,7 +91,7 @@
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            left: 14px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
@@ -131,7 +131,7 @@
         .options-group {
             display: flex;
             gap: 8px;
-            justify-content: flex-end;
+            justify-content: flex-start;
         }
 
         .opt-btn {
@@ -203,11 +203,11 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header-section">
-            <h1>דיווח משמרות לשבוע הבא</h1>
+            <h1>Weekly Shift Report</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
             <div class="select-wrapper">
                 <select id="employeeName" onchange="fetchEmployeeSchedule()">
-                    <option value="" disabled selected>-- בחר שם עובד --</option>
+                    <option value="" disabled selected>-- Select Employee Name --</option>
                     <option value="Angolina Mattar">Angolina Mattar</option>
                     <option value="Arifenur Uslu">Arifenur Uslu</option>
                     <option value="Carlos Salloum">Carlos Salloum</option>
@@ -240,7 +240,7 @@
 
         <!-- Footer -->
         <div class="footer-section">
-            <button class="submit-btn" onclick="submitData()">שמור נתונים</button>
+            <button class="submit-btn" onclick="submitData()">Save Data</button>
         </div>
     </div>
 
@@ -248,7 +248,7 @@
         // Calculate and display current week range (Sunday to Saturday)
         function initWeekDates() {
             const now = new Date();
-            const dayOfWeek = now.getDay(); // 0 for Sunday
+            const dayOfWeek = now.getDay();
             const sunday = new Date(now);
             sunday.setDate(now.getDate() - dayOfWeek);
             
@@ -256,18 +256,18 @@
             saturday.setDate(sunday.getDate() + 6);
             
             const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
-            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)}-${formatDate(saturday)}`;
+            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)} - ${formatDate(saturday)}`;
         }
         initWeekDates();
 
         const days = [
-            { name: "ראשון", id: "sun" },
-            { name: "שני", id: "mon" },
-            { name: "שלישי", id: "tue" },
-            { name: "רביעי", id: "wed" },
-            { name: "חמישי", id: "thu" },
-            { name: "שישי", id: "fri" },
-            { name: "שבת", id: "sat" }
+            { name: "Sunday", id: "sun" },
+            { name: "Monday", id: "mon" },
+            { name: "Tuesday", id: "tue" },
+            { name: "Wednesday", id: "wed" },
+            { name: "Thursday", id: "thu" },
+            { name: "Friday", id: "fri" },
+            { name: "Saturday", id: "sat" }
         ];
 
         const container = document.getElementById('daysContainer');
@@ -278,13 +278,13 @@
             row.innerHTML = `
                 <span class="day-label">${day.name}</span>
                 <div class="options-group" data-day="${day.id}">
-                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="עובד מהמשרד">
+                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="Office">
                         <i class="fa-solid fa-building"></i>
                     </button>
-                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="עובד מהבית">
+                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="Home">
                         <i class="fa-solid fa-house"></i>
                     </button>
-                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="משמרת לילה">
+                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="Night Shift">
                         <i class="fa-solid fa-moon"></i>
                     </button>
                 </div>
@@ -295,12 +295,10 @@
         const schedule = {};
         const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
 
-        // Function to fetch and display existing data from Google Sheets
         async function fetchEmployeeSchedule() {
             const name = document.getElementById('employeeName').value;
             if (!name) return;
 
-            // Reset UI and schedule first
             days.forEach(day => {
                 const group = document.querySelector(`[data-day="${day.id}"]`);
                 const buttons = group.querySelectorAll('.opt-btn');
@@ -312,7 +310,15 @@
 
             try {
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
-                const result = await response.json();
+                const text = await response.text();
+                
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch (e) {
+                    console.error('Server returned non-JSON:', text);
+                    return;
+                }
                 
                 if (result.status === 'success' && result.schedule) {
                     for (const [dayId, type] of Object.entries(result.schedule)) {
@@ -334,7 +340,7 @@
         function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
             if (!name) {
-                return;
+                return; // Silently block if no name is selected
             }
 
             const group = document.querySelector(`[data-day="${dayId}"]`);
@@ -351,7 +357,7 @@
         async function submitData() {
             const name = document.getElementById('employeeName').value;
             if (!name) {
-                alert('אנא בחר שם עובד לפני השמירה');
+                alert('Please select an employee name before saving.');
                 return;
             }
 
@@ -367,10 +373,10 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert('הנתונים נקלטו בהצלחה ונשמרו בטבלה!');
+                alert('Data successfully saved!');
             } catch (error) {
                 console.error('Error!', error.message);
-                alert('שגיאה בשמירת הנתונים');
+                alert('Error saving data.');
             }
         }
 

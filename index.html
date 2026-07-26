@@ -271,6 +271,12 @@
         const schedule = {};
 
         function selectOption(dayId, type) {
+            const name = document.getElementById('employeeName').value;
+            if (!name) {
+                alert('אנא בחר שם עובד תחילה');
+                return;
+            }
+
             const group = document.querySelector(`[data-day="${dayId}"]`);
             const buttons = group.querySelectorAll('.opt-btn');
             

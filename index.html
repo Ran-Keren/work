@@ -196,6 +196,11 @@
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             transform: scale(0.99);
         }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -240,11 +245,14 @@
 
         <!-- Footer -->
         <div class="footer-section">
-            <button class="submit-btn" onclick="submitData()">שמור נתונים</button>
+            <button class="submit-btn" id="submitBtn" onclick="submitData()">שמור נתונים</button>
         </div>
     </div>
 
     <script>
+        // Target Deployment Web App URL
+        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbyIxun1JrtdzH6EVe7TyWtMOcwiLDombwgab3oktQ2plbVK5xKKlMMumpDxGB9CJV9rwQ/exec';
+
         // Calculate and display current week range (Sunday to Saturday)
         function initWeekDates() {
             const now = new Date();
@@ -293,22 +301,26 @@
         });
 
         const schedule = {};
-        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
 
-        // Function to fetch and display existing data from Google Sheets
-        async function fetchEmployeeSchedule() {
-            const name = document.getElementById('employeeName').value;
-            if (!name) return;
-
-            // Reset UI and schedule first
+        function resetUI() {
             days.forEach(day => {
                 const group = document.querySelector(`[data-day="${day.id}"]`);
-                const buttons = group.querySelectorAll('.opt-btn');
-                buttons.forEach(btn => btn.classList.remove('active'));
+                if (group) {
+                    const buttons = group.querySelectorAll('.opt-btn');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                }
             });
             for (let key in schedule) {
                 delete schedule[key];
             }
+        }
+
+        // Fetch existing selections for chosen employee
+        async function fetchEmployeeSchedule() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) return;
+
+            resetUI();
 
             try {
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
@@ -316,12 +328,14 @@
                 
                 if (result.status === 'success' && result.schedule) {
                     for (const [dayId, type] of Object.entries(result.schedule)) {
-                        const group = document.querySelector(`[data-day="${dayId}"]`);
-                        if (group) {
-                            const selectedBtn = group.querySelector(`.${type}`);
-                            if (selectedBtn) {
-                                selectedBtn.classList.add('active');
-                                schedule[dayId] = type;
+                        if (type) {
+                            const group = document.querySelector(`[data-day="${dayId}"]`);
+                            if (group) {
+                                const selectedBtn = group.querySelector(`.${type}`);
+                                if (selectedBtn) {
+                                    selectedBtn.classList.add('active');
+                                    schedule[dayId] = type;
+                                }
                             }
                         }
                     }
@@ -331,29 +345,40 @@
             }
         }
 
+        // Handle button click toggling
         function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
             if (!name) {
+                alert('אנא בחר שם עובד תחילה');
                 return;
             }
 
             const group = document.querySelector(`[data-day="${dayId}"]`);
             const buttons = group.querySelectorAll('.opt-btn');
-            
+            const selectedBtn = group.querySelector(`.${type}`);
+            const isCurrentlyActive = selectedBtn.classList.contains('active');
+
             buttons.forEach(btn => btn.classList.remove('active'));
             
-            const selectedBtn = group.querySelector(`.${type}`);
-            selectedBtn.classList.add('active');
-            
-            schedule[dayId] = type;
+            if (!isCurrentlyActive) {
+                selectedBtn.classList.add('active');
+                schedule[dayId] = type;
+            } else {
+                delete schedule[dayId];
+            }
         }
 
+        // Send submission payload to Web App
         async function submitData() {
             const name = document.getElementById('employeeName').value;
             if (!name) {
                 alert('אנא בחר שם עובד לפני השמירה');
                 return;
             }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'שומר...';
 
             const payload = {
                 employee: name,
@@ -364,18 +389,24 @@
                 await fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(payload)
                 });
                 alert('הנתונים נקלטו בהצלחה ונשמרו בטבלה!');
             } catch (error) {
-                console.error('Error!', error.message);
+                console.error('Error submitting data:', error);
                 alert('שגיאה בשמירת הנתונים');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'שמור נתונים';
             }
         }
 
+        // Block page bounce gestures on mobile devices
         document.addEventListener('touchmove', function (e) {
-            e.preventDefault();
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
         }, { passive: false });
     </script>
 </body>

@@ -294,8 +294,7 @@
                 schedule: schedule
             };
 
-            // Replace with your deployed Google Apps Script Web App URL
-            const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+            const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
 
             try {
                 const response = await fetch(scriptURL, {
@@ -307,7 +306,7 @@
                 alert('הנתונים נקלטו בהצלחה ונשמרו בטבלה!');
             } catch (error) {
                 console.error('Error!', error.message);
-                alert('שעינה בשמירת הנתונים');
+                alert('שגיאה בשמירת הנתונים');
             }
         }
 

@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 4px 8px;
+            padding: 2px 6px;
             max-width: 480px;
             margin: 0 auto;
         }
@@ -41,9 +41,9 @@
         }
 
         h1 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-align: center;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             color: #3b82f6;
         }
 
@@ -54,11 +54,11 @@
 
         select {
             width: 100%;
-            height: 30px;
-            padding: 0 8px;
-            font-size: 0.85rem;
-            border: 2px solid #d1d5db;
-            border-radius: 6px;
+            height: 26px;
+            padding: 0 6px;
+            font-size: 0.8rem;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
             background-color: #fff;
             appearance: none;
             outline: none;
@@ -70,12 +70,12 @@
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            left: 8px;
+            left: 6px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
             color: #6b7280;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
 
         /* Days Grid */
@@ -83,9 +83,9 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
-            gap: 2px;
-            margin: 2px 0;
+            justify-content: space-between;
+            gap: 1px;
+            margin: 1px 0;
             min-height: 0;
         }
 
@@ -94,37 +94,39 @@
             align-items: center;
             justify-content: space-between;
             background: #fff;
-            padding: 2px 6px;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            padding: 1px 4px;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
         }
 
+        /* Day label font made significantly bigger */
         .day-label {
-            font-size: 0.8rem;
+            font-size: 1rem;
             font-weight: bold;
-            width: 50px;
+            width: 55px;
             text-align: right;
+            color: #111827;
         }
 
         .options-group {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             flex: 1;
             justify-content: flex-end;
         }
 
-        /* Large Touch Target Buttons */
+        /* Touch Target Buttons */
         .opt-btn {
-            width: 44px;
-            height: 38px;
-            border-radius: 6px;
+            width: 40px;
+            height: 32px;
+            border-radius: 4px;
             border: 2px solid #e5e7eb;
             background-color: #f9fafb;
             color: #9ca3af;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             cursor: pointer;
             transition: all 0.1s ease;
         }
@@ -155,15 +157,15 @@
 
         .submit-btn {
             width: 100%;
-            height: 34px;
+            height: 30px;
             background-color: #2563eb;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.3);
         }
 
         .submit-btn:active {

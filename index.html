@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 8px 12px;
+            padding: 6px 10px;
             max-width: 480px;
             margin: 0 auto;
         }
@@ -38,13 +38,12 @@
         /* Header & Name Selection */
         .header-section {
             flex: 0 0 auto;
-            margin-bottom: 4px;
         }
 
         h1 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-align: center;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             color: #3b82f6;
         }
 
@@ -55,11 +54,11 @@
 
         select {
             width: 100%;
-            height: 38px;
-            padding: 0 12px;
-            font-size: 0.95rem;
+            height: 34px;
+            padding: 0 10px;
+            font-size: 0.9rem;
             border: 2px solid #d1d5db;
-            border-radius: 8px;
+            border-radius: 6px;
             background-color: #fff;
             appearance: none;
             outline: none;
@@ -71,21 +70,22 @@
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            left: 12px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
             color: #6b7280;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
 
         /* Days Grid */
         .days-container {
-            flex: 1 1 auto;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
-            gap: 4px;
+            justify-content: space-between;
+            gap: 2px;
+            margin: 4px 0;
             min-height: 0;
         }
 
@@ -94,29 +94,30 @@
             align-items: center;
             justify-content: space-between;
             background: #fff;
-            padding: 4px 8px;
+            padding: 2px 6px;
             border-radius: 6px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            height: 11%;
+            flex: 1;
         }
 
         .day-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: bold;
-            width: 60px;
+            width: 55px;
             text-align: right;
         }
 
         .options-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex: 1;
             justify-content: flex-end;
         }
 
+        /* Made Buttons Noticeably Larger */
         .opt-btn {
-            width: 38px;
-            height: 38px;
+            width: 46px;
+            height: 44px;
             border-radius: 8px;
             border: 2px solid #e5e7eb;
             background-color: #f9fafb;
@@ -124,9 +125,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.35rem; /* Larger icons inside buttons */
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.1s ease;
         }
 
         /* Active States for Buttons */
@@ -151,16 +152,15 @@
         /* Footer & Submit */
         .footer-section {
             flex: 0 0 auto;
-            margin-top: 4px;
         }
 
         .submit-btn {
             width: 100%;
-            height: 40px;
+            height: 38px;
             background-color: #2563eb;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 0.95rem;
             font-weight: bold;
             cursor: pointer;
@@ -197,7 +197,7 @@
 
         <!-- 7 Days Container -->
         <div class="days-container" id="daysContainer">
-            <!-- Dynamically populated via script to ensure clean layout -->
+            <!-- Dynamically populated via script -->
         </div>
 
         <!-- Footer -->
@@ -239,7 +239,6 @@
             container.appendChild(row);
         });
 
-        // Track selections
         const schedule = {};
 
         function selectOption(dayId, type) {
@@ -266,7 +265,7 @@
             alert('הנתונים נקלטו בהצלחה!');
         }
 
-        // Prevent pinch-zoom and rubber-band scrolling on mobile
+        // Prevent pinch-zoom and rubber-band scrolling
         document.addEventListener('touchmove', function (e) {
             if (e.scale !== 1) {
                 e.preventDefault();

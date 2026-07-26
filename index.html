@@ -36,7 +36,6 @@
             gap: 10px;
         }
 
-        /* Header & Name Selection */
         .header-section {
             background: #ffffff;
             padding: 12px;
@@ -92,7 +91,6 @@
             font-size: 0.8rem;
         }
 
-        /* Days Grid - Optimized for iPhone touch targets, zero gaps */
         .days-container {
             display: flex;
             flex-direction: column;
@@ -128,7 +126,6 @@
             justify-content: flex-end;
         }
 
-        /* Pro Styled Buttons - Apple HIG friendly (min 44px height) */
         .opt-btn {
             width: 60px;
             height: 44px;
@@ -148,7 +145,6 @@
             background-color: #f1f5f9;
         }
 
-        /* Active States with Distinct Pro Accent Colors */
         .opt-btn.office.active {
             background-color: #eff6ff;
             border-color: #3b82f6;
@@ -170,7 +166,6 @@
             box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
         }
 
-        /* Footer & Submit */
         .footer-section {
             margin-top: 4px;
         }
@@ -204,24 +199,35 @@
             <div class="select-wrapper">
                 <select id="employeeName">
                     <option value="" disabled selected>-- בחר שם עובד --</option>
-                    <option value="אברהם כהן">אברהם כהן</option>
-                    <option value="שרה לוי">שרה לוי</option>
-                    <option value="משה מזרחי">משה מזרחי</option>
-                    <option value="רחל פרץ">רחל פרץ</option>
-                    <option value="דוד ביטון">דוד ביטון</option>
-                    <option value="מרים אברהם">מרים אברהם</option>
-                    <option value="יצחק שלום">יצחק שלום</option>
-                    <option value="לאה מלכה">לאה מלכה</option>
-                    <option value="יוסף חדד">יוסף חדד</option>
-                    <option value="רבקה אזולאי">רבקה אזולאי</option>
+                    <option value="Angolina Mattar">Angolina Mattar</option>
+                    <option value="Arifenur Uslu">Arifenur Uslu</option>
+                    <option value="Carlos Salloum">Carlos Salloum</option>
+                    <option value="Johaina Swaed">Johaina Swaed</option>
+                    <option value="Jwana Qassis">Jwana Qassis</option>
+                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
+                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
+                    <option value="Mai Zbedat">Mai Zbedat</option>
+                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
+                    <option value="Malak Sabbah">Malak Sabbah</option>
+                    <option value="Maya Haddad">Maya Haddad</option>
+                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
+                    <option value="Or Shomonov">Or Shomonov</option>
+                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
+                    <option value="Pearla Deek">Pearla Deek</option>
+                    <option value="Rafael Simanduev">Rafael Simanduev</option>
+                    <option value="Rula Darawshi">Rula Darawshi</option>
+                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
+                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
+                    <option value="Suhail Mustafa">Suhail Mustafa</option>
+                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
+                    <option value="Yazan kezil">Yazan kezil</option>
+                    <option value="Youssef Daoud">Youssef Daoud</option>
                 </select>
             </div>
         </div>
 
         <!-- 7 Days Container -->
-        <div class="days-container" id="daysContainer">
-            <!-- Dynamically populated via script -->
-        </div>
+        <div class="days-container" id="daysContainer"></div>
 
         <!-- Footer -->
         <div class="footer-section">
@@ -276,16 +282,33 @@
             schedule[dayId] = type;
         }
 
-        function submitData() {
+        async function submitData() {
             const name = document.getElementById('employeeName').value;
             if (!name) {
                 alert('אנא בחר שם עובד לפני השמירה');
                 return;
             }
-            
-            console.log("Employee:", name);
-            console.log("Schedule:", schedule);
-            alert('הנתונים נקלטו בהצלחה!');
+
+            const payload = {
+                employee: name,
+                schedule: schedule
+            };
+
+            // Replace with your deployed Google Apps Script Web App URL
+            const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert('הנתונים נקלטו בהצלחה ונשמרו בטבלה!');
+            } catch (error) {
+                console.error('Error!', error.message);
+                alert('שעינה בשמירת הנתונים');
+            }
         }
 
         document.addEventListener('touchmove', function (e) {

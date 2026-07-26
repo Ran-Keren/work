@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -207,7 +206,7 @@
             <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
             <div class="select-wrapper">
-                <select id="employeeName">
+                <select id="employeeName" onchange="fetchEmployeeSchedule()">
                     <option value="" disabled selected>-- בחר שם עובד --</option>
                     <option value="Angolina Mattar">Angolina Mattar</option>
                     <option value="Arifenur Uslu">Arifenur Uslu</option>
@@ -294,6 +293,43 @@
         });
 
         const schedule = {};
+        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
+
+        // Function to fetch and display existing data from Google Sheets
+        async function fetchEmployeeSchedule() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) return;
+
+            // Reset UI and schedule first
+            days.forEach(day => {
+                const group = document.querySelector(`[data-day="${day.id}"]`);
+                const buttons = group.querySelectorAll('.opt-btn');
+                buttons.forEach(btn => btn.classList.remove('active'));
+            });
+            for (let key in schedule) {
+                delete schedule[key];
+            }
+
+            try {
+                const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
+                const result = await response.json();
+                
+                if (result.status === 'success' && result.schedule) {
+                    for (const [dayId, type] of Object.entries(result.schedule)) {
+                        const group = document.querySelector(`[data-day="${dayId}"]`);
+                        if (group) {
+                            const selectedBtn = group.querySelector(`.${type}`);
+                            if (selectedBtn) {
+                                selectedBtn.classList.add('active');
+                                schedule[dayId] = type;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching schedule:', error);
+            }
+        }
 
         function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
@@ -324,10 +360,8 @@
                 schedule: schedule
             };
 
-            const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
-
             try {
-                const response = await fetch(scriptURL, {
+                await fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -346,5 +380,3 @@
     </script>
 </body>
 </html>
-
-```

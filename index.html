@@ -20,8 +20,8 @@
             overflow: hidden;
             position: fixed;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
+            background-color: #f8fafc;
+            color: #1e293b;
         }
 
         .app-container {
@@ -30,7 +30,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 2px 4px;
+            padding: 4px 8px;
             max-width: 480px;
             margin: 0 auto;
         }
@@ -38,13 +38,20 @@
         /* Header & Name Selection */
         .header-section {
             flex: 0 0 auto;
+            background: #ffffff;
+            padding: 6px 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
         }
 
         h1 {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             text-align: center;
-            margin-bottom: 1px;
-            color: #3b82f6;
+            margin-bottom: 3px;
+            color: #0f172a;
+            font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
         .select-wrapper {
@@ -54,15 +61,23 @@
 
         select {
             width: 100%;
-            height: 24px;
-            padding: 0 4px;
-            font-size: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 3px;
-            background-color: #fff;
+            height: 30px;
+            padding: 0 8px;
+            font-size: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background-color: #f8fafc;
             appearance: none;
             outline: none;
-            font-weight: bold;
+            font-weight: 600;
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+
+        select:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
         }
 
         .select-wrapper::after {
@@ -70,22 +85,22 @@
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            left: 4px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
-            color: #6b7280;
-            font-size: 0.6rem;
+            color: #64748b;
+            font-size: 0.65rem;
         }
 
-        /* Days Grid - Ultra tight gaps */
+        /* Days Grid - Ultra compact & Pro card styling */
         .days-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 1px;
-            margin: 1px 0;
+            gap: 2px;
+            margin: 2px 0;
             min-height: 0;
         }
 
@@ -93,18 +108,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #fff;
-            padding: 1px 4px;
-            border-radius: 3px;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+            background: #ffffff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
         }
 
         .day-label {
-            font-size: 0.95rem;
-            font-weight: bold;
-            width: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            width: 48px;
             text-align: right;
-            color: #111827;
+            color: #0f172a;
         }
 
         .options-group {
@@ -114,39 +130,46 @@
             justify-content: flex-end;
         }
 
-        /* Much Bigger Buttons with compact row heights */
+        /* Pro Styled Buttons */
         .opt-btn {
-            width: 54px;
-            height: 38px;
-            border-radius: 4px;
-            border: 2px solid #e5e7eb;
-            background-color: #f9fafb;
-            color: #9ca3af;
+            width: 52px;
+            height: 34px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #64748b;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
+            font-size: 1.15rem;
             cursor: pointer;
-            transition: all 0.1s ease;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Active States for Buttons */
+        .opt-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* Active States with Distinct Pro Accent Colors */
         .opt-btn.office.active {
             background-color: #eff6ff;
             border-color: #3b82f6;
-            color: #3b82f6;
+            color: #2563eb;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
         }
 
         .opt-btn.home.active {
             background-color: #f0fdf4;
             border-color: #22c55e;
-            color: #22c55e;
+            color: #16a34a;
+            box-shadow: 0 1px 2px rgba(22, 163, 74, 0.1);
         }
 
         .opt-btn.night.active {
             background-color: #f5f3ff;
             border-color: #8b5cf6;
-            color: #8b5cf6;
+            color: #7c3aed;
+            box-shadow: 0 1px 2px rgba(124, 58, 237, 0.1);
         }
 
         /* Footer & Submit */
@@ -156,19 +179,21 @@
 
         .submit-btn {
             width: 100%;
-            height: 28px;
-            background-color: #2563eb;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-weight: bold;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+            transition: all 0.15s ease;
         }
 
         .submit-btn:active {
-            background-color: #1d4ed8;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: scale(0.99);
         }
     </style>
 </head>
@@ -177,7 +202,7 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header-section">
-            <h1>בחירת משמרות לשבוע הבא</h1>
+            <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="select-wrapper">
                 <select id="employeeName">
                     <option value="" disabled selected>-- בחר שם עובד --</option>

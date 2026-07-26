@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -47,9 +48,17 @@
         h1 {
             font-size: 1.15rem;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             color: #0f172a;
             font-weight: 700;
+        }
+
+        .week-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .select-wrapper {
@@ -196,6 +205,7 @@
         <!-- Header -->
         <div class="header-section">
             <h1>דיווח משמרות לשבוע הבא</h1>
+            <div class="week-subtitle" id="weekDatesRange"></div>
             <div class="select-wrapper">
                 <select id="employeeName">
                     <option value="" disabled selected>-- בחר שם עובד --</option>
@@ -236,6 +246,21 @@
     </div>
 
     <script>
+        // Calculate and display current week range (Sunday to Saturday)
+        function initWeekDates() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 for Sunday
+            const sunday = new Date(now);
+            sunday.setDate(now.getDate() - dayOfWeek);
+            
+            const saturday = new Date(sunday);
+            saturday.setDate(sunday.getDate() + 6);
+            
+            const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
+            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)}-${formatDate(saturday)}`;
+        }
+        initWeekDates();
+
         const days = [
             { name: "ראשון", id: "sun" },
             { name: "שני", id: "mon" },
@@ -273,7 +298,6 @@
         function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
             if (!name) {
-                alert('אנא בחר שם עובד תחילה');
                 return;
             }
 
@@ -322,3 +346,5 @@
     </script>
 </body>
 </html>
+
+```

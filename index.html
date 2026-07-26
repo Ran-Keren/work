@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>דיווח משמרות שבועי</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 12px;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Header & Name Selection */
+        .header-section {
+            flex: 0 0 auto;
+            margin-bottom: 4px;
+        }
+
+        h1 {
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #3b82f6;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+            height: 38px;
+            padding: 0 12px;
+            font-size: 0.95rem;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #fff;
+            appearance: none;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+
+        /* Days Grid */
+        .days-container {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            gap: 4px;
+            min-height: 0;
+        }
+
+        .day-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            height: 11%;
+        }
+
+        .day-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            width: 60px;
+            text-align: right;
+        }
+
+        .options-group {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .opt-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            background-color: #f9fafb;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        /* Active States for Buttons */
+        .opt-btn.office.active {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .opt-btn.home.active {
+            background-color: #f0fdf4;
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .opt-btn.night.active {
+            background-color: #f5f3ff;
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+        }
+
+        /* Footer & Submit */
+        .footer-section {
+            flex: 0 0 auto;
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 40px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+
+        .submit-btn:active {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1>בחירת משמרות לשבוע הבא</h1>
+            <div class="select-wrapper">
+                <select id="employeeName">
+                    <option value="" disabled selected>-- בחר שם עובד --</option>
+                    <option value="אברהם כהן">אברהם כהן</option>
+                    <option value="שרה לוי">שרה לוי</option>
+                    <option value="משה מזרחי">משה מזרחי</option>
+                    <option value="רחל פרץ">רחל פרץ</option>
+                    <option value="דוד ביטון">דוד ביטון</option>
+                    <option value="מרים אברהם">מרים אברהם</option>
+                    <option value="יצחק שלום">יצחק שלום</option>
+                    <option value="לאה מלכה">לאה מלכה</option>
+                    <option value="יוסף חדד">יוסף חדד</option>
+                    <option value="רבקה אזולאי">רבקה אזולאי</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 7 Days Container -->
+        <div class="days-container" id="daysContainer">
+            <!-- Dynamically populated via script to ensure clean layout -->
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <button class="submit-btn" onclick="submitData()">שמור נתונים</button>
+        </div>
+    </div>
+
+    <script>
+        const days = [
+            { name: "ראשון", id: "sun" },
+            { name: "שני", id: "mon" },
+            { name: "שלישי", id: "tue" },
+            { name: "רביעי", id: "wed" },
+            { name: "חמישי", id: "thu" },
+            { name: "שישי", id: "fri" },
+            { name: "שבת", id: "sat" }
+        ];
+
+        const container = document.getElementById('daysContainer');
+
+        days.forEach(day => {
+            const row = document.createElement('div');
+            row.className = 'day-row';
+            row.innerHTML = `
+                <span class="day-label">${day.name}</span>
+                <div class="options-group" data-day="${day.id}">
+                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="עובד מהמשרד">
+                        <i class="fa-solid fa-building"></i>
+                    </button>
+                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="עובד מהבית">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
+                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="משמרת לילה">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+
+        // Track selections
+        const schedule = {};
+
+        function selectOption(dayId, type) {
+            const group = document.querySelector(`[data-day="${dayId}"]`);
+            const buttons = group.querySelectorAll('.opt-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const selectedBtn = group.querySelector(`.${type}`);
+            selectedBtn.classList.add('active');
+            
+            schedule[dayId] = type;
+        }
+
+        function submitData() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) {
+                alert('אנא בחר שם עובד לפני השמירה');
+                return;
+            }
+            
+            console.log("Employee:", name);
+            console.log("Schedule:", schedule);
+            alert('הנתונים נקלטו בהצלחה!');
+        }
+
+        // Prevent pinch-zoom and rubber-band scrolling on mobile
+        document.addEventListener('touchmove', function (e) {
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>

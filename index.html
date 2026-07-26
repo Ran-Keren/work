@@ -2,382 +2,304 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Weekly Shift Report</title>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Schedule Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e2937;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
-            touch-action: manipulation;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: fixed;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            height: 100%;
-            margin: 0 auto;
-            padding: 12px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        header { text-align: center; margin-bottom: 1.5rem; }
+        h2 { margin: 0; color: var(--primary); font-size: 1.6rem; font-weight: 800; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: inherit;
+            background: white;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
-        }
-
-        .header-section {
-            background: #ffffff;
+            background: #f1f5f9;
             padding: 12px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            margin-bottom: 1.2rem;
         }
 
-        h1 {
-            font-size: 1.15rem;
-            text-align: center;
-            margin-bottom: 4px;
-            color: #0f172a;
-            font-weight: 700;
-        }
-
-        .week-subtitle {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .select-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        select {
-            width: 100%;
-            height: 46px;
-            padding: 0 12px;
-            font-size: 1.05rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background-color: #f8fafc;
-            appearance: none;
-            outline: none;
-            font-weight: 600;
-            color: #334155;
-            transition: all 0.2s ease;
-        }
-
-        select:focus {
-            border-color: #3b82f6;
-            background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .select-wrapper::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #64748b;
-            font-size: 0.8rem;
-        }
-
-        .days-container {
-            display: flex;
-            flex-direction: column;
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-        }
-
-        .day-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #ffffff;
-            padding: 10px 14px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .day-row:last-child {
-            border-bottom: none;
-        }
-
-        .day-label {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .options-group {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-start;
-        }
-
-        .opt-btn {
-            width: 60px;
-            height: 44px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            background-color: #f8fafc;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .opt-btn:hover {
-            background-color: #f1f5f9;
-        }
-
-        .opt-btn.office.active {
-            background-color: #eff6ff;
-            border-color: #3b82f6;
-            color: #2563eb;
-            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
-        }
-
-        .opt-btn.home.active {
-            background-color: #f0fdf4;
-            border-color: #22c55e;
-            color: #16a34a;
-            box-shadow: 0 1px 3px rgba(22, 163, 74, 0.15);
-        }
-
-        .opt-btn.night.active {
-            background-color: #f5f3ff;
-            border-color: #8b5cf6;
-            color: #7c3aed;
-            box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
-        }
-
-        .footer-section {
-            margin-top: 4px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
+        .day-item {
+            background: white;
+            padding: 8px 12px;
             border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .day-item label { font-size: 0.8rem; margin-bottom: 3px; color: #64748b; }
+        .day-item select { padding: 0.4rem; font-size: 0.9rem; border: 1px solid var(--border); }
+
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-            transition: all 0.15s ease;
+            transition: background 0.2s;
         }
 
-        .submit-btn:active {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            transform: scale(0.99);
+        button:hover:not(:disabled) { background-color: var(--primary-hover); }
+        button:disabled { background-color: #cbd5e1; }
+
+        .status-msg {
+            margin-top: 1rem;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            display: none;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Header -->
-        <div class="header-section">
-            <h1>Weekly Shift Report</h1>
-            <div class="week-subtitle" id="weekDatesRange"></div>
-            <div class="select-wrapper">
-                <select id="employeeName" onchange="fetchEmployeeSchedule()">
-                    <option value="" disabled selected>-- Select Employee Name --</option>
-                    <option value="Angolina Mattar">Angolina Mattar</option>
-                    <option value="Arifenur Uslu">Arifenur Uslu</option>
-                    <option value="Carlos Salloum">Carlos Salloum</option>
-                    <option value="Johaina Swaed">Johaina Swaed</option>
-                    <option value="Jwana Qassis">Jwana Qassis</option>
-                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
-                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
-                    <option value="Mai Zbedat">Mai Zbedat</option>
-                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
-                    <option value="Malak Sabbah">Malak Sabbah</option>
-                    <option value="Maya Haddad">Maya Haddad</option>
-                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
-                    <option value="Or Shomonov">Or Shomonov</option>
-                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
-                    <option value="Pearla Deek">Pearla Deek</option>
-                    <option value="Rafael Simanduev">Rafael Simanduev</option>
-                    <option value="Rula Darawshi">Rula Darawshi</option>
-                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
-                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
-                    <option value="Suhail Mustafa">Suhail Mustafa</option>
-                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
-                    <option value="Yazan kezil">Yazan kezil</option>
-                    <option value="Youssef Daoud">Youssef Daoud</option>
+<div class="card">
+    <header>
+        <h2>Weekly Schedule Editor</h2>
+    </header>
+
+    <form id="scheduleForm">
+        <div class="form-group">
+            <label for="employeeName">Select / Type Employee Name</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="employeeName" list="namesList" placeholder="Type name..." required>
+                <button type="button" id="loadBtn" style="width: 130px; margin-top: 0; padding: 0.5rem; font-size: 0.95rem;">Load Data</button>
+            </div>
+            <datalist id="namesList">
+                <!-- Add your employee names here matching Column A -->
+                <option value="אור שמונוב">
+                <option value="אורטל פיטוסי">
+                <option value="אייל ח'יר">
+            </datalist>
+        </div>
+
+        <div class="days-grid">
+            <div class="day-item">
+                <label>Sunday</label>
+                <select id="sun">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+            </div>
+            <div class="day-item">
+                <label>Monday</label>
+                <select id="mon">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+            </div>
+            <div class="day-item">
+                <label>Tuesday</label>
+                <select id="tue">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+            </div>
+            <div class="day-item">
+                <label>Wednesday</label>
+                <select id="wed">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+            </div>
+            <div class="day-item">
+                <label>Thursday</label>
+                <select id="thu">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+            </div>
+            <div class="day-item">
+                <label>Friday</label>
+                <select id="fri">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
+                </select>
+            </div>
+            <div class="day-item" style="grid-column: span 2;">
+                <label>Saturday</label>
+                <select id="sat">
+                    <option value="">-- Choose --</option>
+                    <option value="Option 1">Option 1</option>
+                    <option value="Option 2">Option 2</option>
+                    <option value="Option 3">Option 3</option>
                 </select>
             </div>
         </div>
 
-        <!-- 7 Days Container -->
-        <div class="days-container" id="daysContainer"></div>
+        <button type="submit" id="submitBtn">Save Changes</button>
+    </form>
+    <div id="status" class="status-msg"></div>
+</div>
 
-        <!-- Footer -->
-        <div class="footer-section">
-            <button class="submit-btn" onclick="submitData()">Save Data</button>
-        </div>
-    </div>
+<script>
+    // Paste your Web App deployment URL here
+    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
 
-    <script>
-        // Calculate and display current week range (Sunday to Saturday)
-        function initWeekDates() {
-            const now = new Date();
-            const dayOfWeek = now.getDay();
-            const sunday = new Date(now);
-            sunday.setDate(now.getDate() - dayOfWeek);
-            
-            const saturday = new Date(sunday);
-            saturday.setDate(sunday.getDate() + 6);
-            
-            const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
-            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)} - ${formatDate(saturday)}`;
-        }
-        initWeekDates();
+    const form = document.getElementById('scheduleForm');
+    const loadBtn = document.getElementById('loadBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const status = document.getElementById('status');
 
-        const days = [
-            { name: "Sunday", id: "sun" },
-            { name: "Monday", id: "mon" },
-            { name: "Tuesday", id: "tue" },
-            { name: "Wednesday", id: "wed" },
-            { name: "Thursday", id: "thu" },
-            { name: "Friday", id: "fri" },
-            { name: "Saturday", id: "sat" }
-        ];
-
-        const container = document.getElementById('daysContainer');
-
-        days.forEach(day => {
-            const row = document.createElement('div');
-            row.className = 'day-row';
-            row.innerHTML = `
-                <span class="day-label">${day.name}</span>
-                <div class="options-group" data-day="${day.id}">
-                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="Office">
-                        <i class="fa-solid fa-building"></i>
-                    </button>
-                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="Home">
-                        <i class="fa-solid fa-house"></i>
-                    </button>
-                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="Night Shift">
-                        <i class="fa-solid fa-moon"></i>
-                    </button>
-                </div>
-            `;
-            container.appendChild(row);
-        });
-
-        const schedule = {};
-        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwMJaUCwhWCQPc_UC481F7c0l52XZleD-aa61BBkKofyCY1YAY9iA_F5gp77vbrfa9VOA/exec';
-
-        async function fetchEmployeeSchedule() {
-            const name = document.getElementById('employeeName').value;
-            if (!name) return;
-
-            days.forEach(day => {
-                const group = document.querySelector(`[data-day="${day.id}"]`);
-                const buttons = group.querySelectorAll('.opt-btn');
-                buttons.forEach(btn => btn.classList.remove('active'));
-            });
-            for (let key in schedule) {
-                delete schedule[key];
-            }
-
-            try {
-                const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
-                const text = await response.text();
-                
-                let result;
-                try {
-                    result = JSON.parse(text);
-                } catch (e) {
-                    console.error('Server returned non-JSON:', text);
-                    return;
-                }
-                
-                if (result.status === 'success' && result.schedule) {
-                    for (const [dayId, type] of Object.entries(result.schedule)) {
-                        const group = document.querySelector(`[data-day="${dayId}"]`);
-                        if (group) {
-                            const selectedBtn = group.querySelector(`.${type}`);
-                            if (selectedBtn) {
-                                selectedBtn.classList.add('active');
-                                schedule[dayId] = type;
-                            }
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching schedule:', error);
-            }
+    // Load existing choices when clicking "Load Data"
+    loadBtn.onclick = async () => {
+        const employee = document.getElementById('employeeName').value.trim();
+        if (!employee) {
+            alert('Please enter or select an employee name first.');
+            return;
         }
 
-        function selectOption(dayId, type) {
-            const name = document.getElementById('employeeName').value;
-            if (!name) {
-                return; 
-            }
+        loadBtn.disabled = true;
+        loadBtn.innerText = 'Loading...';
+        status.style.display = 'none';
 
-            const group = document.querySelector(`[data-day="${dayId}"]`);
-            const buttons = group.querySelectorAll('.opt-btn');
-            
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            const selectedBtn = group.querySelector(`.${type}`);
-            selectedBtn.classList.add('active');
-            
-            schedule[dayId] = type;
-        }
+        try {
+            const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(employee)}`);
+            const result = await response.json();
 
-        async function submitData() {
-            const name = document.getElementById('employeeName').value;
-            if (!name) {
-                alert('Please select an employee name before saving.');
-                return;
-            }
+            if (result.status === 'success' && result.schedule) {
+                document.getElementById('sun').value = result.schedule.sun || '';
+                document.getElementById('mon').value = result.schedule.mon || '';
+                document.getElementById('tue').value = result.schedule.tue || '';
+                document.getElementById('wed').value = result.schedule.wed || '';
+                document.getElementById('thu').value = result.schedule.thu || '';
+                document.getElementById('fri').value = result.schedule.fri || '';
+                document.getElementById('sat').value = result.schedule.sat || '';
 
-            const payload = {
-                employee: name,
-                schedule: schedule
-            };
-
-            try {
-                await fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(payload)
+                status.style.display = 'block';
+                status.style.color = '#166534';
+                status.style.backgroundColor = '#dcfce7';
+                status.innerText = '✓ Data loaded successfully!';
+            } else {
+                ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'].forEach(day => {
+                    document.getElementById(day).value = '';
                 });
-                alert('Data successfully saved!');
-            } catch (error) {
-                console.error('Error!', error.message);
-                alert('Error saving data.');
+                status.style.display = 'block';
+                status.style.color = '#991b1b';
+                status.style.backgroundColor = '#fee2e2';
+                status.innerText = 'Employee not found in sheet.';
             }
+        } catch (error) {
+            status.style.display = 'block';
+            status.style.color = '#991b1b';
+            status.style.backgroundColor = '#fee2e2';
+            status.innerText = 'Error loading data.';
+        } finally {
+            loadBtn.disabled = false;
+            loadBtn.innerText = 'Load Data';
         }
-    </script>
+    };
+
+    // Update existing row when clicking "Save Changes"
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+
+        const employee = document.getElementById('employeeName').value.trim();
+        if (!employee) {
+            alert('Please enter an employee name.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Saving...';
+        status.style.display = 'none';
+
+        const payload = {
+            employee: employee,
+            schedule: {
+                sun: document.getElementById('sun').value,
+                mon: document.getElementById('mon').value,
+                tue: document.getElementById('tue').value,
+                wed: document.getElementById('wed').value,
+                thu: document.getElementById('thu').value,
+                fri: document.getElementById('fri').value,
+                sat: document.getElementById('sat').value
+            }
+        };
+
+        try {
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                body: JSON.stringify(payload)
+            });
+
+            status.style.display = 'block';
+            status.style.color = '#166534';
+            status.style.backgroundColor = '#dcfce7';
+            status.innerText = '✓ Changes saved successfully!';
+        } catch (error) {
+            status.style.display = 'block';
+            status.style.color = '#991b1b';
+            status.style.backgroundColor = '#fee2e2';
+            status.innerText = 'Error saving changes';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Save Changes';
+        }
+    };
+</script>
+
 </body>
 </html>

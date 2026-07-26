@@ -293,7 +293,7 @@
         });
 
         const schedule = {};
-        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwtQJ0XatnpyzeEw34A_pFeN_s6kMc-3OhZArirdoxejfXDuyXTg0-ehVWVTIwr1F7qVg/exec';
+        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbwMJaUCwhWCQPc_UC481F7c0l52XZleD-aa61BBkKofyCY1YAY9iA_F5gp77vbrfa9VOA/exec';
 
         async function fetchEmployeeSchedule() {
             const name = document.getElementById('employeeName').value;
@@ -340,7 +340,7 @@
         function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
             if (!name) {
-                return; // Silently block if no name is selected
+                return; 
             }
 
             const group = document.querySelector(`[data-day="${dayId}"]`);
@@ -370,7 +370,6 @@
                 await fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
                 alert('Data successfully saved!');
@@ -379,10 +378,6 @@
                 alert('Error saving data.');
             }
         }
-
-        document.addEventListener('touchmove', function (e) {
-            e.preventDefault();
-        }, { passive: false });
     </script>
 </body>
 </html>

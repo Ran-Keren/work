@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>דיווח משמרות שבועי</title>
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -66,9 +67,9 @@
 
         select {
             width: 100%;
-            height: 44px;
-            padding: 0 12px 0 36px;
-            font-size: 0.95rem;
+            height: 46px;
+            padding: 0 12px;
+            font-size: 1.05rem;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background-color: #f8fafc;
@@ -113,9 +114,8 @@
             align-items: center;
             justify-content: space-between;
             background: #ffffff;
-            padding: 8px 14px;
+            padding: 10px 14px;
             border-bottom: 1px solid #e2e8f0;
-            gap: 12px;
         }
 
         .day-row:last-child {
@@ -123,14 +123,55 @@
         }
 
         .day-label {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #0f172a;
-            min-width: 60px;
         }
 
-        .day-select-wrapper {
-            flex: 1;
+        .options-group {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .opt-btn {
+            width: 60px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .opt-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .opt-btn.office.active {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: #2563eb;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .opt-btn.home.active {
+            background-color: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+            box-shadow: 0 1px 3px rgba(22, 163, 74, 0.15);
+        }
+
+        .opt-btn.night.active {
+            background-color: #f5f3ff;
+            border-color: #8b5cf6;
+            color: #7c3aed;
+            box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
         }
 
         .footer-section {
@@ -152,6 +193,7 @@
         }
 
         .submit-btn:active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             transform: scale(0.99);
         }
 
@@ -208,13 +250,16 @@
     </div>
 
     <script>
+        // Target Deployment Web App URL
         const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbxBKMlIkPm08S_JRJfDx1NlYMWf3QQEkU9Ctt1iFg7zcHk0Ty1l7SFcro3a-pwddr9I/exec';
 
+        // Calculate and display current week range (Sunday to Saturday)
         function initWeekDates() {
             const now = new Date();
-            const dayOfWeek = now.getDay();
+            const dayOfWeek = now.getDay(); // 0 for Sunday
             const sunday = new Date(now);
             sunday.setDate(now.getDate() - dayOfWeek);
+            
             const saturday = new Date(sunday);
             saturday.setDate(sunday.getDate() + 6);
             
@@ -233,32 +278,23 @@
             { name: "שבת", id: "sat" }
         ];
 
-        // Options available in each day cell dropdown
-        const shiftOptions = [
-            { value: "office", label: "🏢 עבודה מהמשרד" },
-            { value: "home", label: "🏠 עבודה מהבית" },
-            { value: "night", label: "🌙 משמרת לילה" },
-            { value: "off", label: "🏖️ חופש" },
-            { value: "sick", label: "🤒 מחלה" }
-        ];
-
         const container = document.getElementById('daysContainer');
 
         days.forEach(day => {
             const row = document.createElement('div');
             row.className = 'day-row';
-            
-            let optionsHTML = `<option value="">-- בחר סוג משמרת --</option>`;
-            shiftOptions.forEach(opt => {
-                optionsHTML += `<option value="${opt.value}">${opt.label}</option>`;
-            });
-
             row.innerHTML = `
                 <span class="day-label">${day.name}</span>
-                <div class="select-wrapper day-select-wrapper">
-                    <select id="select-${day.id}" data-day="${day.id}" onchange="selectOption('${day.id}', this.value)">
-                        ${optionsHTML}
-                    </select>
+                <div class="options-group" data-day="${day.id}">
+                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="עובד מהמשרד">
+                        <i class="fa-solid fa-building"></i>
+                    </button>
+                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="עובד מהבית">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
+                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="משמרת לילה">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
                 </div>
             `;
             container.appendChild(row);
@@ -268,14 +304,18 @@
 
         function resetUI() {
             days.forEach(day => {
-                const sel = document.getElementById(`select-${day.id}`);
-                if (sel) sel.value = "";
+                const group = document.querySelector(`[data-day="${day.id}"]`);
+                if (group) {
+                    const buttons = group.querySelectorAll('.opt-btn');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                }
             });
             for (let key in schedule) {
                 delete schedule[key];
             }
         }
 
+        // Fetch existing selections for chosen employee
         async function fetchEmployeeSchedule() {
             const name = document.getElementById('employeeName').value;
             if (!name) return;
@@ -289,10 +329,13 @@
                 if (result.status === 'success' && result.schedule) {
                     for (const [dayId, type] of Object.entries(result.schedule)) {
                         if (type) {
-                            const sel = document.getElementById(`select-${dayId}`);
-                            if (sel) {
-                                sel.value = type;
-                                schedule[dayId] = type;
+                            const group = document.querySelector(`[data-day="${dayId}"]`);
+                            if (group) {
+                                const selectedBtn = group.querySelector(`.${type}`);
+                                if (selectedBtn) {
+                                    selectedBtn.classList.add('active');
+                                    schedule[dayId] = type;
+                                }
                             }
                         }
                     }
@@ -302,21 +345,30 @@
             }
         }
 
-        function selectOption(dayId, value) {
+        // Handle button click toggling
+        function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
             if (!name) {
                 alert('אנא בחר שם עובד תחילה');
-                document.getElementById(`select-${dayId}`).value = "";
                 return;
             }
 
-            if (value) {
-                schedule[dayId] = value;
+            const group = document.querySelector(`[data-day="${dayId}"]`);
+            const buttons = group.querySelectorAll('.opt-btn');
+            const selectedBtn = group.querySelector(`.${type}`);
+            const isCurrentlyActive = selectedBtn.classList.contains('active');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (!isCurrentlyActive) {
+                selectedBtn.classList.add('active');
+                schedule[dayId] = type;
             } else {
                 delete schedule[dayId];
             }
         }
 
+        // Send submission payload to Web App
         async function submitData() {
             const name = document.getElementById('employeeName').value;
             if (!name) {
@@ -350,6 +402,7 @@
             }
         }
 
+        // Block page bounce gestures on mobile devices
         document.addEventListener('touchmove', function (e) {
             if (e.scale !== 1) {
                 e.preventDefault();

@@ -715,51 +715,67 @@
                     <span class="info-label">מאושר/ת לעבוד מהבית?:</span>
                     <span class="info-val">${cur.statusApproved || ''}</span>
                 </div>
+
+                <div class="info-section-title">חודש קודם</div>
+                <div class="info-row">
+                    <span class="info-label">דירוג לקוחות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsPercentage(prev.customerRating)}</span>
+                        ${renderBadge(prev.customerRatingTarget)}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">דירוג מסעדות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsPercentage(prev.restaurantRating)}</span>
+                        ${renderBadge(prev.restaurantRatingTarget)}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">משך שיחה לקוחות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsMinutes(prev.customerCallDur)}</span>
+                        ${renderBadge(prev.customerCallDurTarget)}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">משך שיחה מסעדות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsMinutes(prev.restaurantCallDur)}</span>
+                        ${renderBadge(prev.restaurantCallDurTarget)}
+                    </div>
+                </div>
+
+                <div class="info-section-title">לפני חודשיים</div>
+                <div class="info-row">
+                    <span class="info-label">דירוג לקוחות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsPercentage(older.customerRating)}</span>
+                        ${renderBadge(older.customerRatingTarget)}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">דירוג מסעדות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsPercentage(older.restaurantRating)}</span>
+                        ${renderBadge(older.restaurantRatingTarget)}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">משך שיחה לקוחות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsMinutes(older.customerCallDur)}</span>
+                        ${renderBadge(older.customerCallDurTarget)}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">משך שיחה מסעדות:</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${formatValueAsMinutes(older.restaurantCallDur)}</span>
+                        ${renderBadge(older.restaurantCallDurTarget)}
+                    </div>
+                </div>
             `;
-
-            if (cachedInfoData.prevMonth) {
-                htmlContent += `
-                    <div class="info-section-title">חודש קודם</div>
-                    <div class="info-row">
-                        <span class="info-label">דירוג לקוחות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(prev.customerRating)}</span> ${renderBadge(prev.customerRatingTarget)}</div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">דירוג מסעדות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(prev.restaurantRating)}</span> ${renderBadge(prev.restaurantRatingTarget)}</div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">משך שיחה לקוחות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(prev.customerCallDur)}</span> ${renderBadge(prev.customerCallDurTarget)}</div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">משך שיחה מסעדות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(prev.restaurantCallDur)}</span> ${renderBadge(prev.restaurantCallDurTarget)}</div>
-                    </div>
-                `;
-            }
-
-            if (cachedInfoData.twoMonthsAgo) {
-                htmlContent += `
-                    <div class="info-section-title">לפני חודשיים</div>
-                    <div class="info-row">
-                        <span class="info-label">דירוג לקוחות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(older.customerRating)}</span> ${renderBadge(older.customerRatingTarget)}</div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">דירוג מסעדות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(older.restaurantRating)}</span> ${renderBadge(older.restaurantRatingTarget)}</div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">משך שיחה לקוחות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(older.customerCallDur)}</span> ${renderBadge(older.customerCallDurTarget)}</div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">משך שיחה מסעדות:</span>
-                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(older.restaurantCallDur)}</span> ${renderBadge(older.restaurantCallDurTarget)}</div>
-                    </div>
-                `;
-            }
 
             infoContainer.innerHTML = htmlContent;
         }

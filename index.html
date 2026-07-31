@@ -212,7 +212,30 @@
             <div class="week-subtitle" id="weekDatesRange"></div>
             <div class="select-wrapper">
                 <select id="employeeName" onchange="fetchEmployeeSchedule()">
-                    <option value="" disabled selected>-- טוען שמות עובדים מהטבלה... --</option>
+                    <option value="" disabled selected>-- בחר שם עובד --</option>
+                    <option value="Angolina Mattar">Angolina Mattar</option>
+                    <option value="Carlos Salloum">Carlos Salloum</option>
+                    <option value="Johaina Swaed">Johaina Swaed</option>
+                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
+                    <option value="Mai Zbedat">Mai Zbedat</option>
+                    <option value="Malak Sabbah">Malak Sabbah</option>
+                    <option value="Maya Haddad">Maya Haddad</option>
+                    <option value="Or Shomonov">Or Shomonov</option>
+                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
+                    <option value="Pearla Deek">Pearla Deek</option>
+                    <option value="Rafael Simanduev">Rafael Simanduev</option>
+                    <option value="Rula Darawshi">Rula Darawshi</option>
+                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
+                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
+                    <option value="Suhail Mustafa">Suhail Mustafa</option>
+                    <option value="Yazan kezil">Yazan kezil</option>
+                    <option value="Arifenur Uslu">Arifenur Uslu</option>
+                    <option value="Jwana Qassis">Jwana Qassis</option>
+                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
+                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
+                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
+                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
+                    <option value="Youssef Daoud">Youssef Daoud</option>
                 </select>
             </div>
         </div>
@@ -278,29 +301,6 @@
         });
 
         const schedule = {};
-
-        // Fetch employee names from Column A on startup
-        async function loadEmployeeNames() {
-            try {
-                const response = await fetch(scriptURL);
-                const result = await response.json();
-                const select = document.getElementById('employeeName');
-                
-                if (result.status === 'success' && result.names) {
-                    select.innerHTML = '<option value="" disabled selected>-- בחר שם עובד --</option>';
-                    result.names.forEach(name => {
-                        const opt = document.createElement('option');
-                        opt.value = name;
-                        opt.textContent = name;
-                        select.appendChild(opt);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading names:', error);
-                document.getElementById('employeeName').innerHTML = '<option value="" disabled selected>-- שגיאה בטעינת שמות --</option>';
-            }
-        }
-        loadEmployeeNames();
 
         function resetUI() {
             days.forEach(day => {

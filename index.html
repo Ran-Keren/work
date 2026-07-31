@@ -29,21 +29,20 @@
             max-width: 480px;
             height: 100%;
             margin: 0 auto;
-            padding: 6px 10px;
+            padding: 4px 8px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 4px;
+            justify-content: space-between;
             position: relative;
         }
 
         .view {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 4px;
+            justify-content: space-between;
             width: 100%;
             height: 100%;
+            padding: 2px 0;
         }
 
         .hidden {
@@ -52,21 +51,20 @@
 
         .info-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 36px;
-            height: 36px;
+            top: 6px;
+            left: 8px;
+            width: 32px;
+            height: 32px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
             display: none;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-            transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
             z-index: 10;
         }
 
@@ -76,25 +74,25 @@
 
         .header-section {
             background: #ffffff;
-            padding: 6px 8px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            padding: 4px 8px;
+            border-radius: 6px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
         }
 
         h1 {
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-align: center;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             color: #0f172a;
             font-weight: 700;
         }
 
         .week-subtitle {
             text-align: center;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             color: #64748b;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             font-weight: 600;
         }
 
@@ -105,9 +103,9 @@
 
         select {
             width: 100%;
-            height: 36px;
-            padding: 0 10px;
-            font-size: 0.9rem;
+            height: 32px;
+            padding: 0 8px;
+            font-size: 0.85rem;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             background-color: #f8fafc;
@@ -115,13 +113,12 @@
             outline: none;
             font-weight: 600;
             color: #334155;
-            transition: all 0.2s ease;
         }
 
         select:focus {
             border-color: #3b82f6;
             background-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
         }
 
         .select-wrapper::after {
@@ -129,25 +126,24 @@
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             position: absolute;
-            left: 12px;
+            left: 10px;
             top: 50%;
             transform: translateY(-50%);
             pointer-events: none;
             color: #64748b;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
         }
 
         .loading-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 2px;
-            min-height: 14px;
+            min-height: 10px;
         }
 
         .spinner {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid #e2e8f0;
             border-top: 2px solid #3b82f6;
             border-radius: 50%;
@@ -163,10 +159,13 @@
             display: flex;
             flex-direction: column;
             background: #ffffff;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             overflow: hidden;
+            flex-grow: 1;
+            margin: 2px 0;
+            justify-content: space-evenly;
         }
 
         .day-row {
@@ -174,8 +173,8 @@
             align-items: center;
             justify-content: space-between;
             background: #ffffff;
-            padding: 4px 10px;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 2px 8px;
+            border-bottom: 1px solid #f1f5f9;
         }
 
         .day-row:last-child {
@@ -183,20 +182,20 @@
         }
 
         .day-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #0f172a;
         }
 
         .options-group {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: flex-end;
         }
 
         .opt-btn {
-            width: 52px;
-            height: 33px;
+            width: 64px;
+            height: 36px;
             border-radius: 6px;
             border: 1px solid #cbd5e1;
             background-color: #f8fafc;
@@ -204,7 +203,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.35rem;
+            font-size: 1.5rem;
             cursor: pointer;
             transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -252,21 +251,20 @@
         }
 
         .footer-section {
-            margin-top: 2px;
+            width: 100%;
         }
 
         .submit-btn {
             width: 100%;
-            height: 40px;
+            height: 38px;
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-            transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
 
         .submit-btn:active {
@@ -279,14 +277,13 @@
             cursor: not-allowed;
         }
 
-        /* Info Page View (Compact & No-Scroll with Larger Fonts) */
+        /* Info Page View */
         #infoView {
             justify-content: space-between;
-            padding: 2px 0;
         }
 
         #infoView .header-section {
-            padding: 5px 8px;
+            padding: 4px 8px;
         }
 
         #infoView .info-header-title {
@@ -299,36 +296,35 @@
         .info-card {
             background: #ffffff;
             padding: 4px 8px;
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-evenly;
             flex-grow: 1;
             margin: 2px 0;
             overflow: hidden;
         }
 
         .info-section-title {
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #2563eb;
             background-color: #eff6ff;
             padding: 2px 4px;
             border-radius: 4px;
             text-align: center;
-            margin-top: 2px;
-            margin-bottom: 2px;
+            margin: 1px 0;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2px 0;
+            padding: 1px 0;
             border-bottom: 1px solid #f8fafc;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
 
         .info-row:last-child {
@@ -374,7 +370,7 @@
             color: #334155;
             border: none;
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
         }
@@ -644,14 +640,12 @@
             const percent = (num <= 1 && num >= 0) ? num * 100 : num;
             const clamped = Math.max(0, Math.min(100, percent));
             
-            // 65 and below -> Blood Red (#b91c1c)
             if (clamped <= 65) {
                 return '#b91c1c';
             }
             
-            // Interpolate between red (#b91c1c) and hard olive green (~#556b2f) from 65 to 100
-            const t = (clamped - 65) / 35; // 0 at 65, 1 at 100
-            const hue = t * 82; // 0 (red) to 82 (olive green)
+            const t = (clamped - 65) / 35;
+            const hue = t * 82;
             const lightness = 38 + (t * 4);
             
             return `hsl(${hue}, 70%, ${lightness}%)`;
@@ -672,22 +666,12 @@
                 return;
             }
 
-            const formatValueAsPercentage = (val) => {
+            const formatValue = (val) => {
                 if (val === undefined || val === null) return '';
                 const clean = String(val).trim();
                 const num = parseFloat(clean);
                 if (!isNaN(num) && num <= 1 && num >= 0) {
                     return `${Math.round(num * 100)}%`;
-                }
-                return clean;
-            };
-
-            const formatValueAsMinutes = (val) => {
-                if (val === undefined || val === null) return '';
-                const clean = String(val).trim();
-                const num = parseFloat(clean);
-                if (!isNaN(num)) {
-                    return `${num} דקות`;
                 }
                 return clean;
             };
@@ -718,28 +702,28 @@
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val" style="color: ${getGradientColor(cur.customerRating)}">${formatValueAsPercentage(cur.customerRating)}</span>
+                        <span class="info-val" style="color: ${getGradientColor(cur.customerRating)}">${formatValue(cur.customerRating)}</span>
                         ${renderBadge(cur.customerRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">דירוג מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val" style="color: ${getGradientColor(cur.restaurantRating)}">${formatValueAsPercentage(cur.restaurantRating)}</span>
+                        <span class="info-val" style="color: ${getGradientColor(cur.restaurantRating)}">${formatValue(cur.restaurantRating)}</span>
                         ${renderBadge(cur.restaurantRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(cur.customerCallDur)}</span>
+                        <span class="info-val">${formatValue(cur.customerCallDur)}</span>
                         ${renderBadge(cur.customerCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(cur.restaurantCallDur)}</span>
+                        <span class="info-val">${formatValue(cur.restaurantCallDur)}</span>
                         ${renderBadge(cur.restaurantCallDurTarget)}
                     </div>
                 </div>
@@ -748,28 +732,28 @@
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val" style="color: ${getGradientColor(prev.customerRating)}">${formatValueAsPercentage(prev.customerRating)}</span>
+                        <span class="info-val" style="color: ${getGradientColor(prev.customerRating)}">${formatValue(prev.customerRating)}</span>
                         ${renderBadge(prev.customerRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">דירוג מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val" style="color: ${getGradientColor(prev.restaurantRating)}">${formatValueAsPercentage(prev.restaurantRating)}</span>
+                        <span class="info-val" style="color: ${getGradientColor(prev.restaurantRating)}">${formatValue(prev.restaurantRating)}</span>
                         ${renderBadge(prev.restaurantRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(prev.customerCallDur)}</span>
+                        <span class="info-val">${formatValue(prev.customerCallDur)}</span>
                         ${renderBadge(prev.customerCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(prev.restaurantCallDur)}</span>
+                        <span class="info-val">${formatValue(prev.restaurantCallDur)}</span>
                         ${renderBadge(prev.restaurantCallDurTarget)}
                     </div>
                 </div>
@@ -778,28 +762,28 @@
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val" style="color: ${getGradientColor(older.customerRating)}">${formatValueAsPercentage(older.customerRating)}</span>
+                        <span class="info-val" style="color: ${getGradientColor(older.customerRating)}">${formatValue(older.customerRating)}</span>
                         ${renderBadge(older.customerRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">דירוג מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val" style="color: ${getGradientColor(older.restaurantRating)}">${formatValueAsPercentage(older.restaurantRating)}</span>
+                        <span class="info-val" style="color: ${getGradientColor(older.restaurantRating)}">${formatValue(older.restaurantRating)}</span>
                         ${renderBadge(older.restaurantRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(older.customerCallDur)}</span>
+                        <span class="info-val">${formatValue(older.customerCallDur)}</span>
                         ${renderBadge(older.customerCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(older.restaurantCallDur)}</span>
+                        <span class="info-val">${formatValue(older.restaurantCallDur)}</span>
                         ${renderBadge(older.restaurantCallDurTarget)}
                     </div>
                 </div>

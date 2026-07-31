@@ -37,7 +37,6 @@
             position: relative;
         }
 
-        /* Views management */
         .view {
             display: flex;
             flex-direction: column;
@@ -51,7 +50,6 @@
             display: none !important;
         }
 
-        /* Square list button in the corner */
         .info-btn {
             position: absolute;
             top: 15px;
@@ -61,9 +59,9 @@
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 8px; /* Square with slight rounding */
+            border-radius: 8px;
             font-size: 1.1rem;
-            display: none; /* Hidden by default until an employee is selected */
+            display: none;
             align-items: center;
             justify-content: center;
             cursor: pointer;
@@ -268,7 +266,7 @@
             cursor: not-allowed;
         }
 
-        /* Info Page Styling */
+        /* Info Page View */
         .info-card {
             background: #ffffff;
             padding: 16px;
@@ -277,7 +275,32 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.95rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .info-val {
+            font-weight: 700;
+            color: #0f172a;
         }
 
         .back-btn {
@@ -302,9 +325,8 @@
 <body>
 
     <div class="app-container">
-        <!-- Main Schedule View -->
+        <!-- Main View -->
         <div id="mainView" class="view">
-            <!-- Square list corner button for info -->
             <button class="info-btn" id="infoBtn" onclick="openInfoPage()" title="מידע על העובד">
                 <i class="fa-solid fa-list"></i>
             </button>
@@ -355,8 +377,8 @@
             <div class="header-section">
                 <h1 id="infoTitle">פרטי עובד</h1>
             </div>
-            <div class="info-card">
-                <div id="infoContent">טוען נתונים...</div>
+            <div class="info-card" id="infoContent">
+                <div style="text-align: center; color: #64748b;">טוען נתונים...</div>
             </div>
             <div class="footer-section">
                 <button class="back-btn" onclick="goBackToMain()">חזרה לדיווח משמרות</button>
@@ -367,6 +389,7 @@
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwX4E_lVTSG8KEYlddLimtyS-Gz13O_folJqP-2V5vZL0z2dg69vpPM_TyCteSkzOz28w/exec';
         let isLoading = false;
+        let cachedInfoData = null;
 
         function initWeekDates() {
             const now = new Date();
@@ -427,6 +450,7 @@
             for (let key in schedule) {
                 delete schedule[key];
             }
+            cachedInfoData = null;
         }
 
         function setHomeButtonRestricted(isRestricted) {
@@ -443,7 +467,6 @@
             const name = document.getElementById('employeeName').value;
             if (!name) return;
 
-            // Show square list button once a name is selected
             document.getElementById('infoBtn').style.display = 'flex';
 
             isLoading = true;
@@ -459,6 +482,10 @@
                 
                 if (result.restricted === true || String(result.colB).trim() === "לא") {
                     setHomeButtonRestricted(true);
+                }
+
+                if (result.info) {
+                    cachedInfoData = result.info;
                 }
 
                 if (result.status === 'success' && result.schedule) {
@@ -554,8 +581,35 @@
             document.getElementById('infoView').classList.remove('hidden');
             document.getElementById('infoTitle').innerText = `מידע עבור: ${name}`;
             
-            // Placeholder for second tab info fetch logic
-            document.getElementById('infoContent').innerText = `כאן יוצגו הנתונים מהטאב השני עבור ${name}.`;
+            const infoContainer = document.getElementById('infoContent');
+            
+            if (!cachedInfoData) {
+                infoContainer.innerHTML = `<div style="text-align: center; color: #64748b;">לא נמצאו נתונים עבור עובד זה.</div>`;
+                return;
+            }
+
+            infoContainer.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">דירוג לקוחות:</span>
+                    <span class="info-val">${cachedInfoData.customerRating} (${cachedInfoData.customerRatingTarget})</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">דירוג מסעדות:</span>
+                    <span class="info-val">${cachedInfoData.restaurantRating} (${cachedInfoData.restaurantRatingTarget})</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">משך שיחה לקוחות:</span>
+                    <span class="info-val">${cachedInfoData.customerCallDur} (${cachedInfoData.customerCallDurTarget})</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">משך שיחה מסעדות:</span>
+                    <span class="info-val">${cachedInfoData.restaurantCallDur} (${cachedInfoData.restaurantCallDurTarget})</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">סטטוס מאושר:</span>
+                    <span class="info-val">${cachedInfoData.statusApproved}</span>
+                </div>
+            `;
         }
 
         function goBackToMain() {

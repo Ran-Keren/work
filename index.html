@@ -60,12 +60,12 @@
             font-weight: 600;
         }
 
-        .select-wrapper {
+        .input-wrapper {
             position: relative;
             width: 100%;
         }
 
-        select {
+        .employee-input {
             width: 100%;
             height: 46px;
             padding: 0 12px;
@@ -73,30 +73,17 @@
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background-color: #f8fafc;
-            appearance: none;
             outline: none;
             font-weight: 600;
             color: #334155;
+            text-align: right;
             transition: all 0.2s ease;
         }
 
-        select:focus {
+        .employee-input:focus {
             border-color: #3b82f6;
             background-color: #ffffff;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .select-wrapper::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #64748b;
-            font-size: 0.8rem;
         }
 
         .days-container {
@@ -210,33 +197,8 @@
         <div class="header-section">
             <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
-            <div class="select-wrapper">
-                <select id="employeeName" onchange="fetchEmployeeSchedule()">
-                    <option value="" disabled selected>-- בחר שם עובד --</option>
-                    <option value="Angolina Mattar">Angolina Mattar</option>
-                    <option value="Arifenur Uslu">Arifenur Uslu</option>
-                    <option value="Carlos Salloum">Carlos Salloum</option>
-                    <option value="Johaina Swaed">Johaina Swaed</option>
-                    <option value="Jwana Qassis">Jwana Qassis</option>
-                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
-                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
-                    <option value="Mai Zbedat">Mai Zbedat</option>
-                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
-                    <option value="Malak Sabbah">Malak Sabbah</option>
-                    <option value="Maya Haddad">Maya Haddad</option>
-                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
-                    <option value="Or Shomonov">Or Shomonov</option>
-                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
-                    <option value="Pearla Deek">Pearla Deek</option>
-                    <option value="Rafael Simanduev">Rafael Simanduev</option>
-                    <option value="Rula Darawshi">Rula Darawshi</option>
-                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
-                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
-                    <option value="Suhail Mustafa">Suhail Mustafa</option>
-                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
-                    <option value="Yazan kezil">Yazan kezil</option>
-                    <option value="Youssef Daoud">Youssef Daoud</option>
-                </select>
+            <div class="input-wrapper">
+                <input type="text" id="employeeName" class="employee-input" placeholder="הכנס שם עובד..." onblur="fetchEmployeeSchedule()" onchange="fetchEmployeeSchedule()">
             </div>
         </div>
 
@@ -317,7 +279,7 @@
 
         // Fetch existing selections for chosen employee
         async function fetchEmployeeSchedule() {
-            const name = document.getElementById('employeeName').value;
+            const name = document.getElementById('employeeName').value.trim();
             if (!name) return;
 
             resetUI();
@@ -347,9 +309,9 @@
 
         // Handle button click toggling
         function selectOption(dayId, type) {
-            const name = document.getElementById('employeeName').value;
+            const name = document.getElementById('employeeName').value.trim();
             if (!name) {
-                alert('אנא בחר שם עובד תחילה');
+                alert('אנא הכנס שם עובד תחילה');
                 return;
             }
 
@@ -370,9 +332,9 @@
 
         // Send submission payload to Web App
         async function submitData() {
-            const name = document.getElementById('employeeName').value;
+            const name = document.getElementById('employeeName').value.trim();
             if (!name) {
-                alert('אנא בחר שם עובד לפני השמירה');
+                alert('אנא הכנס שם עובד לפני השמירה');
                 return;
             }
 

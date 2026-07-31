@@ -392,7 +392,7 @@
         <!-- Main View -->
         <div id="mainView" class="view">
             <button class="info-btn" id="infoBtn" onclick="openInfoPage()" title="מידע על העובד">
-                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-bars"></i>
             </button>
 
             <div class="header-section">
@@ -703,7 +703,7 @@
                 return `<span class="target-badge ${badgeClass}">${displayVal}</span>`;
             };
 
-            const cur = cachedInfoData.currentWeek || cachedInfoData; 
+            const cur = cachedInfoData; 
             const prev = cachedInfoData.monthAgo || {};
             const older = cachedInfoData.twoMonthsAgo || {};
 

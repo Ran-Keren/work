@@ -641,13 +641,20 @@
             const num = parseFloat(clean);
             if (isNaN(num)) return '#0f172a';
             
-            // Normalize percentage if given as decimal (e.g., 0.85 -> 85)
             const percent = (num <= 1 && num >= 0) ? num * 100 : num;
             const clamped = Math.max(0, Math.min(100, percent));
             
-            // Hue goes from 0 (red) to 120 (green)
-            const hue = (clamped / 100) * 120;
-            return `hsl(${hue}, 85%, 38%)`;
+            // 65 and below -> Blood Red (#b91c1c)
+            if (clamped <= 65) {
+                return '#b91c1c';
+            }
+            
+            // Interpolate between red (#b91c1c) and hard olive green (~#556b2f) from 65 to 100
+            const t = (clamped - 65) / 35; // 0 at 65, 1 at 100
+            const hue = t * 82; // 0 (red) to 82 (olive green)
+            const lightness = 38 + (t * 4);
+            
+            return `hsl(${hue}, 70%, ${lightness}%)`;
         }
 
         function openInfoPage() {
@@ -703,7 +710,7 @@
             };
 
             const cur = cachedInfoData; 
-            const prev = cachedInfoData.monthAgo || cachedInfoData.prevMonth || {};
+            const prev = cachedInfoData.monthAgo || {};
             const older = cachedInfoData.twoMonthsAgo || {};
 
             let htmlContent = `

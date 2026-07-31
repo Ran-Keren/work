@@ -99,6 +99,15 @@
             font-size: 0.8rem;
         }
 
+        .loading-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #3b82f6;
+            margin-top: 6px;
+            font-weight: 600;
+            min-height: 1.2rem;
+        }
+
         .days-container {
             display: flex;
             flex-direction: column;
@@ -237,6 +246,7 @@
                     <option value="Youssef Daoud">Youssef Daoud</option>
                 </select>
             </div>
+            <div class="loading-text" id="loadingText"></div>
         </div>
 
         <div class="days-container" id="daysContainer"></div>
@@ -247,7 +257,6 @@
     </div>
 
     <script>
-        // Make sure this is your active deployment URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwAerlPp2izzWlXNnsujzih3dT9W1q7QImpwoszkNhjnUqZmx7NXfOJ6LO0VCYFngcauA/exec';
 
         function initWeekDates() {
@@ -264,7 +273,6 @@
         }
         initWeekDates();
 
-        // Updated with full English IDs to match the sheet exactly
         const days = [
             { name: "ראשון", id: "sunday" },
             { name: "שני", id: "monday" },
@@ -317,6 +325,8 @@
             if (!name) return;
 
             resetUI();
+            const loadingText = document.getElementById('loadingText');
+            loadingText.innerText = 'טוען...';
 
             try {
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
@@ -339,6 +349,8 @@
                 }
             } catch (error) {
                 console.error('Error fetching schedule:', error);
+            } finally {
+                loadingText.innerText = '';
             }
         }
 
@@ -391,7 +403,6 @@
 
             try {
                 await fetch(url);
-                alert('הנתונים נקלטו בהצלחה ונשמרו בטבלה!');
             } catch (error) {
                 console.error('Error submitting data:', error);
                 alert('שגיאה בשמירת הנתונים');

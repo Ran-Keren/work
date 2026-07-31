@@ -490,7 +490,6 @@
             const name = document.getElementById('employeeName').value;
             if (!name) return;
 
-            // Hide the info button while loading new data
             document.getElementById('infoBtn').style.display = 'none';
 
             isLoading = true;
@@ -528,7 +527,6 @@
                     }
                 }
 
-                // Show the info button only after data has successfully loaded
                 document.getElementById('infoBtn').style.display = 'flex';
 
             } catch (error) {
@@ -616,38 +614,53 @@
                 return;
             }
 
+            const formatValueAsPercentage = (val) => {
+                const clean = String(val).trim();
+                const num = parseFloat(clean);
+                if (!isNaN(num) && num <= 1 && num >= 0) {
+                    return `${Math.round(num * 100)}%`;
+                }
+                return clean;
+            };
+
             const renderBadge = (val) => {
                 const clean = String(val).trim();
                 const isYes = clean === '✓' || clean.toLowerCase() === 'כן' || clean.toLowerCase() === 'yes';
-                return `<span class="target-badge ${isYes ? 'yes' : 'no'}">${clean}</span>`;
+                const isNo = clean === '✗' || clean.toLowerCase() === 'לא' || clean.toLowerCase() === 'no';
+                
+                let badgeClass = 'no';
+                if (isYes) badgeClass = 'yes';
+                else if (isNo) badgeClass = 'no';
+
+                return `<span class="target-badge ${badgeClass}">${clean}</span>`;
             };
 
             infoContainer.innerHTML = `
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${cachedInfoData.customerRating}</span>
+                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.customerRating)}</span>
                         ${renderBadge(cachedInfoData.customerRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">דירוג מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${cachedInfoData.restaurantRating}</span>
+                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.restaurantRating)}</span>
                         ${renderBadge(cachedInfoData.restaurantRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${cachedInfoData.customerCallDur}</span>
+                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.customerCallDur)}</span>
                         ${renderBadge(cachedInfoData.customerCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${cachedInfoData.restaurantCallDur}</span>
+                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.restaurantCallDur)}</span>
                         ${renderBadge(cachedInfoData.restaurantCallDurTarget)}
                     </div>
                 </div>

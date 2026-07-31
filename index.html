@@ -34,6 +34,32 @@
             flex-direction: column;
             justify-content: center;
             gap: 10px;
+            position: relative;
+        }
+
+        /* Info corner button styling */
+        .info-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            display: none; /* Hidden by default until an employee is selected */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: all 0.15s ease;
+            z-index: 10;
+        }
+
+        .info-btn:active {
+            transform: scale(0.95);
         }
 
         .header-section {
@@ -183,7 +209,6 @@
             box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
         }
 
-        /* Red styling for home button when restricted (Column B has 'לא') */
         .opt-btn.home.restricted {
             border-color: #ef4444;
             color: #ef4444;
@@ -194,7 +219,6 @@
             background-color: #fee2e2;
         }
 
-        /* Orange styling when a restricted home button is active/pressed */
         .opt-btn.home.restricted.active {
             background-color: #fff7ed;
             border-color: #f97316;
@@ -234,6 +258,11 @@
 <body>
 
     <div class="app-container">
+        <!-- Blue corner button for info -->
+        <button class="info-btn" id="infoBtn" onclick="openInfoPage()" title="מידע על העובד">
+            <i class="fa-solid fa-info"></i>
+        </button>
+
         <div class="header-section">
             <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
@@ -354,9 +383,12 @@
             const name = document.getElementById('employeeName').value;
             if (!name) return;
 
+            // Show info button once a name is selected
+            document.getElementById('infoBtn').style.display = 'flex';
+
             isLoading = true;
             resetUI();
-            setHomeButtonRestricted(false); // Reset restriction styling initially
+            setHomeButtonRestricted(false);
             
             const loadingText = document.getElementById('loadingText');
             loadingText.innerText = 'טוען...';
@@ -365,7 +397,6 @@
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
                 const result = await response.json();
                 
-                // Check if column B specifies restriction ("לא")
                 if (result.restricted === true || String(result.colB).trim() === "לא") {
                     setHomeButtonRestricted(true);
                 }
@@ -453,6 +484,13 @@
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'שמור נתונים';
             }
+        }
+
+        function openInfoPage() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) return;
+            // Action to take you to info page/view can be implemented here
+            alert('מעבר לדף מידע עבור: ' + name);
         }
 
         document.addEventListener('touchmove', function (e) {

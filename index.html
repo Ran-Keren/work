@@ -206,7 +206,6 @@
 <body>
 
     <div class="app-container">
-        <!-- Header -->
         <div class="header-section">
             <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
@@ -240,16 +239,15 @@
             </div>
         </div>
 
-        <!-- 7 Days Container -->
         <div class="days-container" id="daysContainer"></div>
 
-        <!-- Footer -->
         <div class="footer-section">
             <button class="submit-btn" id="submitBtn" onclick="submitData()">שמור נתונים</button>
         </div>
     </div>
 
     <script>
+        // Make sure this is your active deployment URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwAerlPp2izzWlXNnsujzih3dT9W1q7QImpwoszkNhjnUqZmx7NXfOJ6LO0VCYFngcauA/exec';
 
         function initWeekDates() {
@@ -266,14 +264,15 @@
         }
         initWeekDates();
 
+        // Updated with full English IDs to match the sheet exactly
         const days = [
-            { name: "ראשון", id: "sun" },
-            { name: "שני", id: "mon" },
-            { name: "שלישי", id: "tue" },
-            { name: "רביעי", id: "wed" },
-            { name: "חמישי", id: "thu" },
-            { name: "שישי", id: "fri" },
-            { name: "שבת", id: "sat" }
+            { name: "ראשון", id: "sunday" },
+            { name: "שני", id: "monday" },
+            { name: "שלישי", id: "tuesday" },
+            { name: "רביעי", id: "wednesday" },
+            { name: "חמישי", id: "thursday" },
+            { name: "שישי", id: "friday" },
+            { name: "שבת", id: "saturday" }
         ];
 
         const container = document.getElementById('daysContainer');

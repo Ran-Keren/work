@@ -217,7 +217,7 @@
     <div class="app-container">
         <div class="header-section">
             <h1>דיווח משמרות לשבוע הבא</h1>
-            <div class="week-subtitle" id="weekDatesRange">טוען...</div>
+            <div class="week-subtitle" id="weekDatesRange"></div>
             <div class="select-wrapper">
                 <select id="employeeName" onchange="fetchEmployeeSchedule()">
                     <option value="" disabled selected>-- בחר שם עובד --</option>
@@ -257,23 +257,21 @@
     </div>
 
     <script>
-        const scriptURL = 'YOUR_WEB_APP_URL_HERE';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwX4E_lVTSG8KEYlddLimtyS-Gz13O_folJqP-2V5vZL0z2dg69vpPM_TyCteSkzOz28w/exec';
 
-        async function initTabName() {
-            try {
-                const response = await fetch(`${scriptURL}?action=meta`);
-                const result = await response.json();
-                if (result.status === 'success' && result.tabName) {
-                    document.getElementById('weekDatesRange').innerText = result.tabName;
-                } else {
-                    document.getElementById('weekDatesRange').innerText = '';
-                }
-            } catch (error) {
-                console.error('Error fetching tab name:', error);
-                document.getElementById('weekDatesRange').innerText = '';
-            }
+        function initWeekDates() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); 
+            const sunday = new Date(now);
+            sunday.setDate(now.getDate() - dayOfWeek);
+            
+            const saturday = new Date(sunday);
+            saturday.setDate(sunday.getDate() + 6);
+            
+            const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
+            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)}-${formatDate(saturday)}`;
         }
-        initTabName();
+        initWeekDates();
 
         const days = [
             { name: "ראשון", id: "sunday" },

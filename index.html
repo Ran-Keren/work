@@ -259,6 +259,22 @@
     <script>
         const scriptURL = 'YOUR_WEB_APP_URL_HERE';
 
+        async function initTabName() {
+            try {
+                const response = await fetch(`${scriptURL}?action=meta`);
+                const result = await response.json();
+                if (result.status === 'success' && result.tabName) {
+                    document.getElementById('weekDatesRange').innerText = result.tabName;
+                } else {
+                    document.getElementById('weekDatesRange').innerText = '';
+                }
+            } catch (error) {
+                console.error('Error fetching tab name:', error);
+                document.getElementById('weekDatesRange').innerText = '';
+            }
+        }
+        initTabName();
+
         const days = [
             { name: "ראשון", id: "sunday" },
             { name: "שני", id: "monday" },
@@ -292,23 +308,6 @@
         });
 
         const schedule = {};
-
-        // Fetch tab name dynamically on load using JSONP / fallback or standard GET
-        async function initTabName() {
-            try {
-                const response = await fetch(`${scriptURL}?action=meta`);
-                const result = await response.json();
-                if (result.status === 'success' && result.tabName) {
-                    document.getElementById('weekDatesRange').innerText = result.tabName;
-                } else {
-                    document.getElementById('weekDatesRange').innerText = '';
-                }
-            } catch (error) {
-                console.error('Error fetching tab name:', error);
-                document.getElementById('weekDatesRange').innerText = '';
-            }
-        }
-        initTabName();
 
         function resetUI() {
             days.forEach(day => {
@@ -406,7 +405,6 @@
 
             try {
                 await fetch(url);
-                alert('הנתונים נשמרו בהצלחה!');
             } catch (error) {
                 console.error('Error submitting data:', error);
                 alert('שגיאה בשמירת הנתונים');

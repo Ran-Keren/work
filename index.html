@@ -258,6 +258,7 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwX4E_lVTSG8KEYlddLimtyS-Gz13O_folJqP-2V5vZL0z2dg69vpPM_TyCteSkzOz28w/exec';
+        let isLoading = false;
 
         function initWeekDates() {
             const now = new Date();
@@ -324,11 +325,11 @@
             const name = document.getElementById('employeeName').value;
             if (!name) return;
 
+            isLoading = true;
             resetUI();
             const loadingText = document.getElementById('loadingText');
             loadingText.innerText = 'טוען...';
 
-            // Map incoming Hebrew text from the sheet back to CSS class names
             const reverseMap = { 'משרד': 'office', 'בית': 'home', 'ערב': 'night' };
 
             try {
@@ -343,7 +344,6 @@
                                 const selectedBtn = group.querySelector(`.${type}`);
                                 if (selectedBtn) {
                                     selectedBtn.classList.add('active');
-                                    // Reverse map back to text for internal state tracking
                                     const textMap = { 'office': 'משרד', 'home': 'בית', 'night': 'ערב' };
                                     schedule[dayId] = textMap[type];
                                 }
@@ -355,17 +355,19 @@
                 console.error('Error fetching schedule:', error);
             } finally {
                 loadingText.innerText = '';
+                isLoading = false;
             }
         }
 
         function selectOption(dayId, type) {
+            if (isLoading) return;
+
             const name = document.getElementById('employeeName').value;
             if (!name) {
                 alert('אנא בחר שם עובד תחילה');
                 return;
             }
 
-            // Map button type to Hebrew text for the sheet
             const textMap = {
                 'office': 'משרד',
                 'home': 'בית',
@@ -389,6 +391,8 @@
         }
 
         async function submitData() {
+            if (isLoading) return;
+
             const name = document.getElementById('employeeName').value;
             if (!name) {
                 alert('אנא בחר שם עובד לפני השמירה');
@@ -408,7 +412,6 @@
 
             try {
                 await fetch(url);
-                alert('הנתונים נשמרו בהצלחה!');
             } catch (error) {
                 console.error('Error submitting data:', error);
                 alert('שגיאה בשמירת הנתונים');

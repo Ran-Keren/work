@@ -623,6 +623,15 @@
                 return clean;
             };
 
+            const formatValueAsMinutes = (val) => {
+                const clean = String(val).trim();
+                const num = parseFloat(clean);
+                if (!isNaN(num)) {
+                    return `${num} דקות`;
+                }
+                return clean;
+            };
+
             const renderBadge = (val) => {
                 const clean = String(val).trim();
                 const isYes = clean === '✓' || clean.toLowerCase() === 'כן' || clean.toLowerCase() === 'yes';
@@ -653,14 +662,14 @@
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.customerCallDur)}</span>
+                        <span class="info-val">${formatValueAsMinutes(cachedInfoData.customerCallDur)}</span>
                         ${renderBadge(cachedInfoData.customerCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.restaurantCallDur)}</span>
+                        <span class="info-val">${formatValueAsMinutes(cachedInfoData.restaurantCallDur)}</span>
                         ${renderBadge(cachedInfoData.restaurantCallDurTarget)}
                     </div>
                 </div>

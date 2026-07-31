@@ -183,6 +183,24 @@
             box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
         }
 
+        /* Red style for home button when col B has 'לא' */
+        .opt-btn.home.restricted {
+            border-color: #ef4444;
+            color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        .opt-btn.home.restricted:hover {
+            background-color: #fee2e2;
+        }
+
+        .opt-btn.home.restricted.active {
+            background-color: #fef2f2;
+            border-color: #dc2626;
+            color: #dc2626;
+            box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15);
+        }
+
         .footer-section {
             margin-top: 4px;
         }
@@ -313,12 +331,25 @@
                 const group = document.querySelector(`[data-day="${day.id}"]`);
                 if (group) {
                     const buttons = group.querySelectorAll('.opt-btn');
-                    buttons.forEach(btn => btn.classList.remove('active'));
+                    buttons.forEach(btn => {
+                        btn.classList.remove('active');
+                        // Do not clear the restricted class here so it persists across resets if set
+                    });
                 }
             });
             for (let key in schedule) {
                 delete schedule[key];
             }
+        }
+
+        function setHomeButtonRestricted(isRestricted) {
+            document.querySelectorAll('.opt-btn.home').forEach(btn => {
+                if (isRestricted) {
+                    btn.classList.add('restricted');
+                } else {
+                    btn.classList.remove('restricted');
+                }
+            });
         }
 
         async function fetchEmployeeSchedule() {
@@ -327,15 +358,20 @@
 
             isLoading = true;
             resetUI();
+            setHomeButtonRestricted(false); // Reset restriction styling initially
+            
             const loadingText = document.getElementById('loadingText');
             loadingText.innerText = 'טוען...';
-
-            const reverseMap = { 'משרד': 'office', 'בית': 'home', 'ערב': 'night' };
 
             try {
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
                 const result = await response.json();
                 
+                // Check if column B specifies restriction ("לא")
+                if (result.restricted === true || String(result.colB).trim() === "לא") {
+                    setHomeButtonRestricted(true);
+                }
+
                 if (result.status === 'success' && result.schedule) {
                     for (const [dayId, type] of Object.entries(result.schedule)) {
                         if (type) {

@@ -42,6 +42,7 @@
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             border: 1px solid #e2e8f0;
+            position: relative;
         }
 
         h1 {
@@ -58,6 +59,28 @@
             color: #64748b;
             margin-bottom: 8px;
             font-weight: 600;
+        }
+
+        .sheet-link-btn {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-color: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .sheet-link-btn:hover {
+            background-color: #dcfce7;
         }
 
         .input-wrapper {
@@ -195,6 +218,9 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header-section">
+            <a href="https://docs.google.com/spreadsheets/d/18imhL5bijx5vBieFKRCDPpJEJBYAUrqR9A5I1hD_6n0/edit?gid=41522311#gid=41522311" target="_blank" class="sheet-link-btn" title="פתח טבלה">
+                <i class="fa-solid fa-table"></i> טבלה
+            </a>
             <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
             <div class="input-wrapper">
@@ -213,7 +239,7 @@
 
     <script>
         // Target Deployment Web App URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx4ZYnhJd9Y2QQCblwNC5_ZLyVlDRxTGxDDwq3H-f95iJ6yeDg1vy_BDI28H0mgbAO5oQ/exec';
+        const scriptURL = 'https://script.google.com/a/macros/wolt.com/s/AKfycbxBKMlIkPm08S_JRJfDx1NlYMWf3QQEkU9Ctt1iFg7zcHk0Ty1l7SFcro3a-pwddr9I/exec';
 
         // Calculate and display current week range (Sunday to Saturday)
         function initWeekDates() {

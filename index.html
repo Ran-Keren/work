@@ -298,9 +298,32 @@
             color: #64748b;
         }
 
+        .info-val-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .info-val {
             font-weight: 700;
             color: #0f172a;
+        }
+
+        .target-badge {
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .target-badge.yes {
+            background-color: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .target-badge.no {
+            background-color: #fef2f2;
+            color: #ef4444;
         }
 
         .back-btn {
@@ -588,25 +611,43 @@
                 return;
             }
 
+            const renderBadge = (val) => {
+                const clean = String(val).trim();
+                const isYes = clean === '✓' || clean.toLowerCase() === 'כן' || clean.toLowerCase() === 'yes';
+                return `<span class="target-badge ${isYes ? 'yes' : 'no'}">${clean}</span>`;
+            };
+
             infoContainer.innerHTML = `
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
-                    <span class="info-val">${cachedInfoData.customerRating} (${cachedInfoData.customerRatingTarget})</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${cachedInfoData.customerRating}</span>
+                        ${renderBadge(cachedInfoData.customerRatingTarget)}
+                    </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">דירוג מסעדות:</span>
-                    <span class="info-val">${cachedInfoData.restaurantRating} (${cachedInfoData.restaurantRatingTarget})</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${cachedInfoData.restaurantRating}</span>
+                        ${renderBadge(cachedInfoData.restaurantRatingTarget)}
+                    </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
-                    <span class="info-val">${cachedInfoData.customerCallDur} (${cachedInfoData.customerCallDurTarget})</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${cachedInfoData.customerCallDur}</span>
+                        ${renderBadge(cachedInfoData.customerCallDurTarget)}
+                    </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
-                    <span class="info-val">${cachedInfoData.restaurantCallDur} (${cachedInfoData.restaurantCallDurTarget})</span>
+                    <div class="info-val-group">
+                        <span class="info-val">${cachedInfoData.restaurantCallDur}</span>
+                        ${renderBadge(cachedInfoData.restaurantCallDurTarget)}
+                    </div>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">סטטוס מאושר:</span>
+                    <span class="info-label">מאושר/ת לעבוד מהבית?:</span>
                     <span class="info-val">${cachedInfoData.statusApproved}</span>
                 </div>
             `;

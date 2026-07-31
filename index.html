@@ -328,6 +328,9 @@
             const loadingText = document.getElementById('loadingText');
             loadingText.innerText = 'טוען...';
 
+            // Map incoming Hebrew text from the sheet back to CSS class names
+            const reverseMap = { 'משרד': 'office', 'בית': 'home', 'ערב': 'night' };
+
             try {
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
                 const result = await response.json();
@@ -340,8 +343,9 @@
                                 const selectedBtn = group.querySelector(`.${type}`);
                                 if (selectedBtn) {
                                     selectedBtn.classList.add('active');
-                                    const numMap = { 'office': 1, 'home': 2, 'night': 3 };
-                                    schedule[dayId] = numMap[type];
+                                    // Reverse map back to text for internal state tracking
+                                    const textMap = { 'office': 'משרד', 'home': 'בית', 'night': 'ערב' };
+                                    schedule[dayId] = textMap[type];
                                 }
                             }
                         }
@@ -361,13 +365,14 @@
                 return;
             }
 
-            const numMap = {
-                'office': 1,
-                'home': 2,
-                'night': 3
+            // Map button type to Hebrew text for the sheet
+            const textMap = {
+                'office': 'משרד',
+                'home': 'בית',
+                'night': 'ערב'
             };
 
-            const val = numMap[type];
+            const val = textMap[type];
             const group = document.querySelector(`[data-day="${dayId}"]`);
             const buttons = group.querySelectorAll('.opt-btn');
             const selectedBtn = group.querySelector(`.${type}`);
@@ -397,12 +402,13 @@
             let url = `${scriptURL}?action=save&employee=${encodeURIComponent(name)}`;
             days.forEach(day => {
                 if (schedule[day.id]) {
-                    url += `&${day.id}=${schedule[day.id]}`;
+                    url += `&${day.id}=${encodeURIComponent(schedule[day.id])}`;
                 }
             });
 
             try {
                 await fetch(url);
+                alert('הנתונים נשמרו בהצלחה!');
             } catch (error) {
                 console.error('Error submitting data:', error);
                 alert('שגיאה בשמירת הנתונים');

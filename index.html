@@ -667,7 +667,7 @@
             const older = cachedInfoData.twoMonthsAgo || {};
 
             let htmlContent = `
-                <div class="info-section-title">חודש נוכחי</div>
+                <div class="info-section-title">שבוע נוכחי</div>
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
                     <div class="info-val-group">
@@ -726,7 +726,7 @@
 
             if (cachedInfoData.twoMonthsAgo) {
                 htmlContent += `
-                    <div class="info-section-title">חודש לפני כן (לפני חודשיים)</div>
+                    <div class="info-section-title">לפני חודשיים</div>
                     <div class="info-row">
                         <span class="info-label">דירוג לקוחות:</span>
                         <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(older.customerRating)}</span> ${renderBadge(older.customerRatingTarget)}</div>

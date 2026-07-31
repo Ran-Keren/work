@@ -345,7 +345,7 @@
             }
         }
 
-        // Handle button click toggling
+        // Handle button click toggling with exact sheet choice values
         function selectOption(dayId, type) {
             const name = document.getElementById('employeeName').value;
             if (!name) {
@@ -353,6 +353,14 @@
                 return;
             }
 
+            // Map button types to exact spreadsheet text strings
+            const valueMap = {
+                'office': 'from work',
+                'home': 'from home',
+                'night': 'night shift'
+            };
+
+            const textValue = valueMap[type];
             const group = document.querySelector(`[data-day="${dayId}"]`);
             const buttons = group.querySelectorAll('.opt-btn');
             const selectedBtn = group.querySelector(`.${type}`);
@@ -362,7 +370,7 @@
             
             if (!isCurrentlyActive) {
                 selectedBtn.classList.add('active');
-                schedule[dayId] = type;
+                schedule[dayId] = textValue;
             } else {
                 delete schedule[dayId];
             }

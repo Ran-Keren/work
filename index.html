@@ -1,91 +1,422 @@
-const SPREADSHEET_ID = "1rKR1VaHaIDAUVgz_bWJ9nX42R_3uhl4KS9OZNojEYGU";
-const TAB_NAME = "MAIN";
-
-const DAY_COLUMNS = {
-  "sunday": 3,    // Column C
-  "monday": 4,    // Column D
-  "tuesday": 5,   // Column E
-  "wednesday": 6, // Column F
-  "thursday": 7,  // Column G
-  "friday": 8,    // Column H
-  "saturday": 9   // Column I
-};
-
-function getTargetSheet() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(TAB_NAME);
-  if (!sheet) {
-    throw new Error("Tab not found: " + TAB_NAME);
-  }
-  return sheet;
-}
-
-function doGet(e) {
-  try {
-    const params = e ? e.parameter : {};
-    
-    // Return the active tab name dynamically
-    if (params.action === "meta") {
-      const sheet = getTargetSheet();
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", tabName: sheet.getName() }))
-          .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const sheet = getTargetSheet();
-    const targetEmployee = params.employee;
-    
-    if (!targetEmployee) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "No employee specified" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const data = sheet.getDataRange().getValues();
-    let targetRow = -1;
-    
-    for (let i = 2; i < data.length; i++) {
-      const sheetName = String(data[i][0] || "").trim();
-      if (sheetName.toLowerCase() === String(targetEmployee).toLowerCase()) {
-        targetRow = i + 1;
-        break;
-      }
-    }
-    
-    if (targetRow === -1) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Employee not found in column A starting from row 3" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    if (params.action === "save") {
-      for (const [dayId, colIdx] of Object.entries(DAY_COLUMNS)) {
-        const cell = sheet.getRange(targetRow, colIdx);
-        const val = params[dayId];
-        if (val !== undefined && val !== "") {
-          cell.setValue(Number(val)); 
-        } else {
-          cell.setValue("");
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>דיווח משמרות שבועי</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            touch-action: manipulation;
         }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", action: "saved" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    let schedule = {};
-    for (const [dayId, colIdx] of Object.entries(DAY_COLUMNS)) {
-      const cellVal = Number(data[targetRow - 1][colIdx - 1]);
-      if (cellVal === 1) schedule[dayId] = "office";
-      else if (cellVal === 2 || cellVal === 4) schedule[dayId] = "home";
-      else if (cellVal === 3) schedule[dayId] = "night";
-    }
-    
-    return ContentService.createTextOutput(JSON.stringify({ status: "success", schedule: schedule }))
-        .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
-        .setMimeType(ContentService.MimeType.JSON);
-  }
-}
 
-function doPost(e) {
-  return doGet(e);
-}
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header-section {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        h1 {
+            font-size: 1.15rem;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .week-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+            height: 46px;
+            padding: 0 12px;
+            font-size: 1.05rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            appearance: none;
+            outline: none;
+            font-weight: 600;
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+
+        select:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .loading-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #3b82f6;
+            margin-top: 6px;
+            font-weight: 600;
+            min-height: 1.2rem;
+        }
+
+        .days-container {
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .day-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .day-row:last-child {
+            border-bottom: none;
+        }
+
+        .day-label {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .options-group {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .opt-btn {
+            width: 60px;
+            height: 44px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .opt-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .opt-btn.office.active {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: #2563eb;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .opt-btn.home.active {
+            background-color: #f0fdf4;
+            border-color: #22c55e;
+            color: #16a34a;
+            box-shadow: 0 1px 3px rgba(22, 163, 74, 0.15);
+        }
+
+        .opt-btn.night.active {
+            background-color: #f5f3ff;
+            border-color: #8b5cf6;
+            color: #7c3aed;
+            box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .footer-section {
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            transition: all 0.15s ease;
+        }
+
+        .submit-btn:active {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: scale(0.99);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header-section">
+            <h1>דיווח משמרות לשבוע הבא</h1>
+            <div class="week-subtitle" id="weekDatesRange"></div>
+            <div class="select-wrapper">
+                <select id="employeeName" onchange="fetchEmployeeSchedule()">
+                    <option value="" disabled selected>-- בחר שם עובד --</option>
+                    <option value="Angolina Mattar">Angolina Mattar</option>
+                    <option value="Carlos Salloum">Carlos Salloum</option>
+                    <option value="Johaina Swaed">Johaina Swaed</option>
+                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
+                    <option value="Mai Zbedat">Mai Zbedat</option>
+                    <option value="Malak Sabbah">Malak Sabbah</option>
+                    <option value="Maya Haddad">Maya Haddad</option>
+                    <option value="Or Shomonov">Or Shomonov</option>
+                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
+                    <option value="Pearla Deek">Pearla Deek</option>
+                    <option value="Rafael Simanduev">Rafael Simanduev</option>
+                    <option value="Rula Darawshi">Rula Darawshi</option>
+                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
+                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
+                    <option value="Suhail Mustafa">Suhail Mustafa</option>
+                    <option value="Yazan kezil">Yazan kezil</option>
+                    <option value="Arifenur Uslu">Arifenur Uslu</option>
+                    <option value="Jwana Qassis">Jwana Qassis</option>
+                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
+                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
+                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
+                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
+                    <option value="Youssef Daoud">Youssef Daoud</option>
+                </select>
+            </div>
+            <div class="loading-text" id="loadingText"></div>
+        </div>
+
+        <div class="days-container" id="daysContainer"></div>
+
+        <div class="footer-section">
+            <button class="submit-btn" id="submitBtn" onclick="submitData()">שמור נתונים</button>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwX4E_lVTSG8KEYlddLimtyS-Gz13O_folJqP-2V5vZL0z2dg69vpPM_TyCteSkzOz28w/exec';
+
+        function initWeekDates() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); 
+            const sunday = new Date(now);
+            sunday.setDate(now.getDate() - dayOfWeek);
+            
+            const saturday = new Date(sunday);
+            saturday.setDate(sunday.getDate() + 6);
+            
+            const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
+            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)}-${formatDate(saturday)}`;
+        }
+        initWeekDates();
+
+        const days = [
+            { name: "ראשון", id: "sunday" },
+            { name: "שני", id: "monday" },
+            { name: "שלישי", id: "tuesday" },
+            { name: "רביעי", id: "wednesday" },
+            { name: "חמישי", id: "thursday" },
+            { name: "שישי", id: "friday" },
+            { name: "שבת", id: "saturday" }
+        ];
+
+        const container = document.getElementById('daysContainer');
+
+        days.forEach(day => {
+            const row = document.createElement('div');
+            row.className = 'day-row';
+            row.innerHTML = `
+                <span class="day-label">${day.name}</span>
+                <div class="options-group" data-day="${day.id}">
+                    <button type="button" class="opt-btn office" onclick="selectOption('${day.id}', 'office')" title="עובד מהמשרד">
+                        <i class="fa-solid fa-building"></i>
+                    </button>
+                    <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="עובד מהבית">
+                        <i class="fa-solid fa-house"></i>
+                    </button>
+                    <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="משמרת לילה">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+
+        const schedule = {};
+
+        function resetUI() {
+            days.forEach(day => {
+                const group = document.querySelector(`[data-day="${day.id}"]`);
+                if (group) {
+                    const buttons = group.querySelectorAll('.opt-btn');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                }
+            });
+            for (let key in schedule) {
+                delete schedule[key];
+            }
+        }
+
+        async function fetchEmployeeSchedule() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) return;
+
+            resetUI();
+            const loadingText = document.getElementById('loadingText');
+            loadingText.innerText = 'טוען...';
+
+            try {
+                const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
+                const result = await response.json();
+                
+                if (result.status === 'success' && result.schedule) {
+                    for (const [dayId, type] of Object.entries(result.schedule)) {
+                        if (type) {
+                            const group = document.querySelector(`[data-day="${dayId}"]`);
+                            if (group) {
+                                const selectedBtn = group.querySelector(`.${type}`);
+                                if (selectedBtn) {
+                                    selectedBtn.classList.add('active');
+                                    const numMap = { 'office': 1, 'home': 2, 'night': 3 };
+                                    schedule[dayId] = numMap[type];
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching schedule:', error);
+            } finally {
+                loadingText.innerText = '';
+            }
+        }
+
+        function selectOption(dayId, type) {
+            const name = document.getElementById('employeeName').value;
+            if (!name) {
+                alert('אנא בחר שם עובד תחילה');
+                return;
+            }
+
+            const numMap = {
+                'office': 1,
+                'home': 2,
+                'night': 3
+            };
+
+            const val = numMap[type];
+            const group = document.querySelector(`[data-day="${dayId}"]`);
+            const buttons = group.querySelectorAll('.opt-btn');
+            const selectedBtn = group.querySelector(`.${type}`);
+            const isCurrentlyActive = selectedBtn.classList.contains('active');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (!isCurrentlyActive) {
+                selectedBtn.classList.add('active');
+                schedule[dayId] = val;
+            } else {
+                delete schedule[dayId];
+            }
+        }
+
+        async function submitData() {
+            const name = document.getElementById('employeeName').value;
+            if (!name) {
+                alert('אנא בחר שם עובד לפני השמירה');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'שומר...';
+
+            let url = `${scriptURL}?action=save&employee=${encodeURIComponent(name)}`;
+            days.forEach(day => {
+                if (schedule[day.id]) {
+                    url += `&${day.id}=${schedule[day.id]}`;
+                }
+            });
+
+            try {
+                await fetch(url);
+            } catch (error) {
+                console.error('Error submitting data:', error);
+                alert('שגיאה בשמירת הנתונים');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'שמור נתונים';
+            }
+        }
+
+        document.addEventListener('touchmove', function (e) {
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>

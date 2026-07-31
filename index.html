@@ -176,9 +176,9 @@
             box-shadow: 0 1px 3px rgba(22, 163, 74, 0.15);
         }
 
-        .opt-btn.home-red.active {
+        .opt-btn.home.active.red-house {
             background-color: #fef2f2;
-            border-color: #ef4444;
+            border-color: #cbd5e1;
             color: #dc2626;
             box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15);
         }
@@ -304,9 +304,6 @@
                     <button type="button" class="opt-btn home" onclick="selectOption('${day.id}', 'home')" title="עובד מהבית">
                         <i class="fa-solid fa-house"></i>
                     </button>
-                    <button type="button" class="opt-btn home-red" onclick="selectOption('${day.id}', 'home-red')" title="בית אדום">
-                        <i class="fa-solid fa-house"></i>
-                    </button>
                     <button type="button" class="opt-btn night" onclick="selectOption('${day.id}', 'night')" title="משמרת לילה">
                         <i class="fa-solid fa-moon"></i>
                     </button>
@@ -322,7 +319,10 @@
                 const group = document.querySelector(`[data-day="${day.id}"]`);
                 if (group) {
                     const buttons = group.querySelectorAll('.opt-btn');
-                    buttons.forEach(btn => btn.classList.remove('active'));
+                    buttons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.remove('red-house');
+                    });
                 }
             });
             for (let key in schedule) {
@@ -347,13 +347,16 @@
                         if (val) {
                             const group = document.querySelector(`[data-day="${dayId}"]`);
                             if (group) {
-                                // Map number from sheet back to button type class
-                                const typeMap = { 1: 'office', 2: 'home', 4: 'home-red', 3: 'night' };
+                                // Map number from sheet: 1=office, 2=home, 4=home(red), 3=night
+                                const typeMap = { 1: 'office', 2: 'home', 4: 'home', 3: 'night' };
                                 const type = typeMap[val];
                                 if (type) {
                                     const selectedBtn = group.querySelector(`.${type}`);
                                     if (selectedBtn) {
                                         selectedBtn.classList.add('active');
+                                        if (val === 4) {
+                                            selectedBtn.classList.add('red-house');
+                                        }
                                         schedule[dayId] = val;
                                     }
                                 }
@@ -378,7 +381,6 @@
             const numMap = {
                 'office': 1,
                 'home': 2,
-                'home-red': 4,
                 'night': 3
             };
 
@@ -388,7 +390,10 @@
             const selectedBtn = group.querySelector(`.${type}`);
             const isCurrentlyActive = selectedBtn.classList.contains('active');
 
-            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('red-house');
+            });
             
             if (!isCurrentlyActive) {
                 selectedBtn.classList.add('active');

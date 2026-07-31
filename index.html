@@ -250,7 +250,7 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbypyiQsYZ-Odfhn52q63DrOPOVdM_XGoxgoDY4_uwPOVkPD9ub5zXye9h_BsZjlF2WTcg/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwAerlPp2izzWlXNnsujzih3dT9W1q7QImpwoszkNhjnUqZmx7NXfOJ6LO0VCYFngcauA/exec';
 
         function initWeekDates() {
             const now = new Date();
@@ -331,7 +331,6 @@
                                 const selectedBtn = group.querySelector(`.${type}`);
                                 if (selectedBtn) {
                                     selectedBtn.classList.add('active');
-                                    // Map 1/2/3 back to internal type values
                                     const numMap = { 'office': 1, 'home': 2, 'night': 3 };
                                     schedule[dayId] = numMap[type];
                                 }
@@ -351,7 +350,6 @@
                 return;
             }
 
-            // 1 = office, 2 = home, 3 = night
             const numMap = {
                 'office': 1,
                 'home': 2,

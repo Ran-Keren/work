@@ -275,18 +275,29 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 70vh;
+            gap: 12px;
+            max-height: 72vh;
             overflow-y: auto;
+        }
+
+        .info-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2563eb;
+            background-color: #eff6ff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-top: 4px;
+            text-align: center;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 6px 0;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .info-row:last-child {
@@ -300,7 +311,7 @@
 
         .info-val-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
 
@@ -310,7 +321,7 @@
         }
 
         .target-badge {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             padding: 2px 6px;
             border-radius: 4px;
             font-weight: 600;
@@ -615,6 +626,7 @@
             }
 
             const formatValueAsPercentage = (val) => {
+                if (val === undefined || val === null) return '';
                 const clean = String(val).trim();
                 const num = parseFloat(clean);
                 if (!isNaN(num) && num <= 1 && num >= 0) {
@@ -624,6 +636,7 @@
             };
 
             const formatValueAsMinutes = (val) => {
+                if (val === undefined || val === null) return '';
                 const clean = String(val).trim();
                 const num = parseFloat(clean);
                 if (!isNaN(num)) {
@@ -633,6 +646,7 @@
             };
 
             const renderBadge = (val) => {
+                if (val === undefined || val === null) return '';
                 const clean = String(val).trim();
                 const isYes = clean === '✓' || clean.toLowerCase() === 'כן' || clean.toLowerCase() === 'yes';
                 const isNo = clean === '✗' || clean.toLowerCase() === 'לא' || clean.toLowerCase() === 'no';
@@ -641,43 +655,103 @@
                 if (isYes) badgeClass = 'yes';
                 else if (isNo) badgeClass = 'no';
 
-                return `<span class="target-badge ${badgeClass}">${clean}</span>`;
+                // Mark X in red style text/symbol if needed, V in green
+                let displayVal = clean;
+                if (isYes && displayVal === '✓') displayVal = '✓';
+                if (isNo && displayVal === '✗') displayVal = '✗';
+
+                return `<span class="target-badge ${badgeClass}">${displayVal}</span>`;
             };
 
-            infoContainer.innerHTML = `
+            // Supporting current month, previous month, and 2 months before that structure
+            const cur = cachedInfoData; 
+            // Assuming secondary/historical datasets might be appended as prevMonth / twoMonthsAgo in cachedInfoData if supplied by Apps Script
+            const prev = cachedInfoData.prevMonth || {};
+            const older = cachedInfoData.twoMonthsAgo || {};
+
+            let htmlContent = `
+                <div class="info-section-title">חודש נוכחי</div>
                 <div class="info-row">
                     <span class="info-label">דירוג לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.customerRating)}</span>
-                        ${renderBadge(cachedInfoData.customerRatingTarget)}
+                        <span class="info-val">${formatValueAsPercentage(cur.customerRating)}</span>
+                        ${renderBadge(cur.customerRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">דירוג מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsPercentage(cachedInfoData.restaurantRating)}</span>
-                        ${renderBadge(cachedInfoData.restaurantRatingTarget)}
+                        <span class="info-val">${formatValueAsPercentage(cur.restaurantRating)}</span>
+                        ${renderBadge(cur.restaurantRatingTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה לקוחות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(cachedInfoData.customerCallDur)}</span>
-                        ${renderBadge(cachedInfoData.customerCallDurTarget)}
+                        <span class="info-val">${formatValueAsMinutes(cur.customerCallDur)}</span>
+                        ${renderBadge(cur.customerCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">משך שיחה מסעדות:</span>
                     <div class="info-val-group">
-                        <span class="info-val">${formatValueAsMinutes(cachedInfoData.restaurantCallDur)}</span>
-                        ${renderBadge(cachedInfoData.restaurantCallDurTarget)}
+                        <span class="info-val">${formatValueAsMinutes(cur.restaurantCallDur)}</span>
+                        ${renderBadge(cur.restaurantCallDurTarget)}
                     </div>
                 </div>
                 <div class="info-row">
                     <span class="info-label">מאושר/ת לעבוד מהבית?:</span>
-                    <span class="info-val">${cachedInfoData.statusApproved}</span>
+                    <span class="info-val">${cur.statusApproved || ''}</span>
                 </div>
             `;
+
+            // Optional previous month block if available
+            if (cachedInfoData.prevMonth) {
+                htmlContent += `
+                    <div class="info-section-title">חודש קודם</div>
+                    <div class="info-row">
+                        <span class="info-label">דירוג לקוחות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(prev.customerRating)}</span> ${renderBadge(prev.customerRatingTarget)}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">דירוג מסעדות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(prev.restaurantRating)}</span> ${renderBadge(prev.restaurantRatingTarget)}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">משך שיחה לקוחות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(prev.customerCallDur)}</span> ${renderBadge(prev.customerCallDurTarget)}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">משך שיחה מסעדות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(prev.restaurantCallDur)}</span> ${renderBadge(prev.restaurantCallDurTarget)}</div>
+                    </div>
+                `;
+            }
+
+            // Optional two months before block if available
+            if (cachedInfoData.twoMonthsAgo) {
+                htmlContent += `
+                    <div class="info-section-title">חודש לפני כן</div>
+                    <div class="info-row">
+                        <span class="info-label">דירוג לקוחות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(older.customerRating)}</span> ${renderBadge(older.customerRatingTarget)}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">דירוג מסעדות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsPercentage(older.restaurantRating)}</span> ${renderBadge(older.restaurantRatingTarget)}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">משך שיחה לקוחות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(older.customerCallDur)}</span> ${renderBadge(older.customerCallDurTarget)}</div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">משך שיחה מסעדות:</span>
+                        <div class="info-val-group"><span class="info-val">${formatValueAsMinutes(older.restaurantCallDur)}</span> ${renderBadge(older.restaurantCallDurTarget)}</div>
+                    </div>
+                `;
+            }
+
+            infoContainer.innerHTML = htmlContent;
         }
 
         function goBackToMain() {

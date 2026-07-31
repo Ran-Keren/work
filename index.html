@@ -176,13 +176,6 @@
             box-shadow: 0 1px 3px rgba(22, 163, 74, 0.15);
         }
 
-        .opt-btn.home.active.red-house {
-            background-color: #fef2f2;
-            border-color: #cbd5e1;
-            color: #dc2626;
-            box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15);
-        }
-
         .opt-btn.night.active {
             background-color: #f5f3ff;
             border-color: #8b5cf6;
@@ -319,10 +312,7 @@
                 const group = document.querySelector(`[data-day="${day.id}"]`);
                 if (group) {
                     const buttons = group.querySelectorAll('.opt-btn');
-                    buttons.forEach(btn => {
-                        btn.classList.remove('active');
-                        btn.classList.remove('red-house');
-                    });
+                    buttons.forEach(btn => btn.classList.remove('active'));
                 }
             });
             for (let key in schedule) {
@@ -343,22 +333,15 @@
                 const result = await response.json();
                 
                 if (result.status === 'success' && result.schedule) {
-                    for (const [dayId, val] of Object.entries(result.schedule)) {
-                        if (val) {
+                    for (const [dayId, type] of Object.entries(result.schedule)) {
+                        if (type) {
                             const group = document.querySelector(`[data-day="${dayId}"]`);
                             if (group) {
-                                // Map number from sheet: 1=office, 2=home, 4=home(red), 3=night
-                                const typeMap = { 1: 'office', 2: 'home', 4: 'home', 3: 'night' };
-                                const type = typeMap[val];
-                                if (type) {
-                                    const selectedBtn = group.querySelector(`.${type}`);
-                                    if (selectedBtn) {
-                                        selectedBtn.classList.add('active');
-                                        if (val === 4) {
-                                            selectedBtn.classList.add('red-house');
-                                        }
-                                        schedule[dayId] = val;
-                                    }
+                                const selectedBtn = group.querySelector(`.${type}`);
+                                if (selectedBtn) {
+                                    selectedBtn.classList.add('active');
+                                    const numMap = { 'office': 1, 'home': 2, 'night': 3 };
+                                    schedule[dayId] = numMap[type];
                                 }
                             }
                         }
@@ -390,10 +373,7 @@
             const selectedBtn = group.querySelector(`.${type}`);
             const isCurrentlyActive = selectedBtn.classList.contains('active');
 
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                btn.classList.remove('red-house');
-            });
+            buttons.forEach(btn => btn.classList.remove('active'));
             
             if (!isCurrentlyActive) {
                 selectedBtn.classList.add('active');

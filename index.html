@@ -702,7 +702,7 @@
                 return `<span class="target-badge ${badgeClass}">${displayVal}</span>`;
             };
 
-            const cur = cachedInfoData; 
+            const cur = cachedInfoData.currentWeek || cachedInfoData; 
             const prev = cachedInfoData.monthAgo || {};
             const older = cachedInfoData.twoMonthsAgo || {};
 

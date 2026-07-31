@@ -37,7 +37,21 @@
             position: relative;
         }
 
-        /* Info corner button styling */
+        /* Views management */
+        .view {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Square list button in the corner */
         .info-btn {
             position: absolute;
             top: 15px;
@@ -47,7 +61,7 @@
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 50%;
+            border-radius: 8px; /* Square with slight rounding */
             font-size: 1.1rem;
             display: none; /* Hidden by default until an employee is selected */
             align-items: center;
@@ -253,54 +267,100 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
+        /* Info Page Styling */
+        .info-card {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .back-btn {
+            width: 100%;
+            height: 50px;
+            background-color: #e2e8f0;
+            color: #334155;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .back-btn:active {
+            background-color: #cbd5e1;
+            transform: scale(0.99);
+        }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- Blue corner button for info -->
-        <button class="info-btn" id="infoBtn" onclick="openInfoPage()" title="מידע על העובד">
-            <i class="fa-solid fa-info"></i>
-        </button>
+        <!-- Main Schedule View -->
+        <div id="mainView" class="view">
+            <!-- Square list corner button for info -->
+            <button class="info-btn" id="infoBtn" onclick="openInfoPage()" title="מידע על העובד">
+                <i class="fa-solid fa-list"></i>
+            </button>
 
-        <div class="header-section">
-            <h1>דיווח משמרות לשבוע הבא</h1>
-            <div class="week-subtitle" id="weekDatesRange"></div>
-            <div class="select-wrapper">
-                <select id="employeeName" onchange="fetchEmployeeSchedule()">
-                    <option value="" disabled selected>-- בחר שם עובד --</option>
-                    <option value="Angolina Mattar">Angolina Mattar</option>
-                    <option value="Carlos Salloum">Carlos Salloum</option>
-                    <option value="Johaina Swaed">Johaina Swaed</option>
-                    <option value="Mahdi Zoabi">Mahdi Zoabi</option>
-                    <option value="Mai Zbedat">Mai Zbedat</option>
-                    <option value="Malak Sabbah">Malak Sabbah</option>
-                    <option value="Maya Haddad">Maya Haddad</option>
-                    <option value="Or Shomonov">Or Shomonov</option>
-                    <option value="Ortal Fitoussi">Ortal Fitoussi</option>
-                    <option value="Pearla Deek">Pearla Deek</option>
-                    <option value="Rafael Simanduev">Rafael Simanduev</option>
-                    <option value="Rula Darawshi">Rula Darawshi</option>
-                    <option value="Sally Gharzuzi">Sally Gharzuzi</option>
-                    <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
-                    <option value="Suhail Mustafa">Suhail Mustafa</option>
-                    <option value="Yazan kezil">Yazan kezil</option>
-                    <option value="Arifenur Uslu">Arifenur Uslu</option>
-                    <option value="Jwana Qassis">Jwana Qassis</option>
-                    <option value="Kathryn Bachishche">Kathryn Bachishche</option>
-                    <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
-                    <option value="Mohamad Shaheen">Mohamad Shaheen</option>
-                    <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
-                    <option value="Youssef Daoud">Youssef Daoud</option>
-                </select>
+            <div class="header-section">
+                <h1>דיווח משמרות לשבוע הבא</h1>
+                <div class="week-subtitle" id="weekDatesRange"></div>
+                <div class="select-wrapper">
+                    <select id="employeeName" onchange="fetchEmployeeSchedule()">
+                        <option value="" disabled selected>-- בחר שם עובד --</option>
+                        <option value="Angolina Mattar">Angolina Mattar</option>
+                        <option value="Carlos Salloum">Carlos Salloum</option>
+                        <option value="Johaina Swaed">Johaina Swaed</option>
+                        <option value="Mahdi Zoabi">Mahdi Zoabi</option>
+                        <option value="Mai Zbedat">Mai Zbedat</option>
+                        <option value="Malak Sabbah">Malak Sabbah</option>
+                        <option value="Maya Haddad">Maya Haddad</option>
+                        <option value="Or Shomonov">Or Shomonov</option>
+                        <option value="Ortal Fitoussi">Ortal Fitoussi</option>
+                        <option value="Pearla Deek">Pearla Deek</option>
+                        <option value="Rafael Simanduev">Rafael Simanduev</option>
+                        <option value="Rula Darawshi">Rula Darawshi</option>
+                        <option value="Sally Gharzuzi">Sally Gharzuzi</option>
+                        <option value="Shmuel Tetruashvili">Shmuel Tetruashvili</option>
+                        <option value="Suhail Mustafa">Suhail Mustafa</option>
+                        <option value="Yazan kezil">Yazan kezil</option>
+                        <option value="Arifenur Uslu">Arifenur Uslu</option>
+                        <option value="Jwana Qassis">Jwana Qassis</option>
+                        <option value="Kathryn Bachishche">Kathryn Bachishche</option>
+                        <option value="Mais Abed Elrhman">Mais Abed Elrhman</option>
+                        <option value="Mohamad Shaheen">Mohamad Shaheen</option>
+                        <option value="Tehila Nava Ben Hayoun">Tehila Nava Ben Hayoun</option>
+                        <option value="Youssef Daoud">Youssef Daoud</option>
+                    </select>
+                </div>
+                <div class="loading-text" id="loadingText"></div>
             </div>
-            <div class="loading-text" id="loadingText"></div>
+
+            <div class="days-container" id="daysContainer"></div>
+
+            <div class="footer-section">
+                <button class="submit-btn" id="submitBtn" onclick="submitData()">שמור נתונים</button>
+            </div>
         </div>
 
-        <div class="days-container" id="daysContainer"></div>
-
-        <div class="footer-section">
-            <button class="submit-btn" id="submitBtn" onclick="submitData()">שמור נתונים</button>
+        <!-- Info Page View -->
+        <div id="infoView" class="view hidden">
+            <div class="header-section">
+                <h1 id="infoTitle">פרטי עובד</h1>
+            </div>
+            <div class="info-card">
+                <div id="infoContent">טוען נתונים...</div>
+            </div>
+            <div class="footer-section">
+                <button class="back-btn" onclick="goBackToMain()">חזרה לדיווח משמרות</button>
+            </div>
         </div>
     </div>
 
@@ -383,7 +443,7 @@
             const name = document.getElementById('employeeName').value;
             if (!name) return;
 
-            // Show info button once a name is selected
+            // Show square list button once a name is selected
             document.getElementById('infoBtn').style.display = 'flex';
 
             isLoading = true;
@@ -489,8 +549,18 @@
         function openInfoPage() {
             const name = document.getElementById('employeeName').value;
             if (!name) return;
-            // Action to take you to info page/view can be implemented here
-            alert('מעבר לדף מידע עבור: ' + name);
+
+            document.getElementById('mainView').classList.add('hidden');
+            document.getElementById('infoView').classList.remove('hidden');
+            document.getElementById('infoTitle').innerText = `מידע עבור: ${name}`;
+            
+            // Placeholder for second tab info fetch logic
+            document.getElementById('infoContent').innerText = `כאן יוצגו הנתונים מהטאב השני עבור ${name}.`;
+        }
+
+        function goBackToMain() {
+            document.getElementById('infoView').classList.add('hidden');
+            document.getElementById('mainView').classList.remove('hidden');
         }
 
         document.addEventListener('touchmove', function (e) {

@@ -42,7 +42,6 @@
             border-radius: 12px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
             border: 1px solid #e2e8f0;
-            position: relative;
         }
 
         h1 {
@@ -61,34 +60,12 @@
             font-weight: 600;
         }
 
-        .sheet-link-btn {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background-color: #f0fdf4;
-            color: #16a34a;
-            border: 1px solid #bbf7d0;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s ease;
-        }
-
-        .sheet-link-btn:hover {
-            background-color: #dcfce7;
-        }
-
-        .input-wrapper {
+        .select-wrapper {
             position: relative;
             width: 100%;
         }
 
-        .employee-input {
+        select {
             width: 100%;
             height: 46px;
             padding: 0 12px;
@@ -96,17 +73,30 @@
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background-color: #f8fafc;
+            appearance: none;
             outline: none;
             font-weight: 600;
             color: #334155;
-            text-align: right;
             transition: all 0.2s ease;
         }
 
-        .employee-input:focus {
+        select:focus {
             border-color: #3b82f6;
             background-color: #ffffff;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #64748b;
+            font-size: 0.8rem;
         }
 
         .days-container {
@@ -218,14 +208,12 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header-section">
-            <a href="https://docs.google.com/spreadsheets/d/18imhL5bijx5vBieFKRCDPpJEJBYAUrqR9A5I1hD_6n0/edit?gid=41522311#gid=41522311" target="_blank" class="sheet-link-btn" title="פתח טבלה">
-                <i class="fa-solid fa-table"></i> טבלה
-            </a>
             <h1>דיווח משמרות לשבוע הבא</h1>
             <div class="week-subtitle" id="weekDatesRange"></div>
-            <div class="input-wrapper">
-                <input type="text" id="employeeName" class="employee-input" placeholder="הכנס או בחר שם עובד..." list="employeeList" onblur="fetchEmployeeSchedule()" onchange="fetchEmployeeSchedule()">
-                <datalist id="employeeList"></datalist>
+            <div class="select-wrapper">
+                <select id="employeeName" onchange="fetchEmployeeSchedule()">
+                    <option value="" disabled selected>-- טוען שמות עובדים מהטבלה... --</option>
+                </select>
             </div>
         </div>
 
@@ -240,12 +228,12 @@
 
     <script>
         // Target Deployment Web App URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbypyiQsYZ-Odfhn52q63DrOPOVdM_XGoxgoDY4_uwPOVkPD9ub5zXye9h_BsZjlF2WTcg/exec';
+        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_DEPLOYMENT_URL_HERE';
 
         // Calculate and display current week range (Sunday to Saturday)
         function initWeekDates() {
             const now = new Date();
-            const dayOfWeek = now.getDay(); // 0 for Sunday
+            const dayOfWeek = now.getDay(); 
             const sunday = new Date(now);
             sunday.setDate(now.getDate() - dayOfWeek);
             
@@ -291,25 +279,28 @@
 
         const schedule = {};
 
-        // Fetch Employee Names for Datalist on startup
-        async function fetchEmployeeNames() {
+        // Fetch employee names from Column A on startup
+        async function loadEmployeeNames() {
             try {
-                const response = await fetch(`${scriptURL}?action=getNames`);
+                const response = await fetch(scriptURL);
                 const result = await response.json();
+                const select = document.getElementById('employeeName');
+                
                 if (result.status === 'success' && result.names) {
-                    const datalist = document.getElementById('employeeList');
-                    datalist.innerHTML = '';
+                    select.innerHTML = '<option value="" disabled selected>-- בחר שם עובד --</option>';
                     result.names.forEach(name => {
-                        const option = document.createElement('option');
-                        option.value = name;
-                        datalist.appendChild(option);
+                        const opt = document.createElement('option');
+                        opt.value = name;
+                        opt.textContent = name;
+                        select.appendChild(opt);
                     });
                 }
             } catch (error) {
-                console.error('Error fetching employee names:', error);
+                console.error('Error loading names:', error);
+                document.getElementById('employeeName').innerHTML = '<option value="" disabled selected>-- שגיאה בטעינת שמות --</option>';
             }
         }
-        fetchEmployeeNames();
+        loadEmployeeNames();
 
         function resetUI() {
             days.forEach(day => {
@@ -324,9 +315,9 @@
             }
         }
 
-        // Fetch existing selections for chosen employee
+        // Fetch existing selections for chosen employee from their row
         async function fetchEmployeeSchedule() {
-            const name = document.getElementById('employeeName').value.trim();
+            const name = document.getElementById('employeeName').value;
             if (!name) return;
 
             resetUI();
@@ -356,9 +347,9 @@
 
         // Handle button click toggling
         function selectOption(dayId, type) {
-            const name = document.getElementById('employeeName').value.trim();
+            const name = document.getElementById('employeeName').value;
             if (!name) {
-                alert('אנא הכנס שם עובד תחילה');
+                alert('אנא בחר שם עובד תחילה');
                 return;
             }
 
@@ -377,11 +368,11 @@
             }
         }
 
-        // Send submission payload to Web App
+        // Send submission payload to Web App and write into the row/cells
         async function submitData() {
-            const name = document.getElementById('employeeName').value.trim();
+            const name = document.getElementById('employeeName').value;
             if (!name) {
-                alert('אנא הכנס שם עובד לפני השמירה');
+                alert('אנא בחר שם עובד לפני השמירה');
                 return;
             }
 

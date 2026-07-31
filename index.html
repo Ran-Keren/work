@@ -183,7 +183,7 @@
             box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
         }
 
-        /* Red style for home button when col B has 'לא' */
+        /* Red styling for home button when restricted (Column B has 'לא') */
         .opt-btn.home.restricted {
             border-color: #ef4444;
             color: #ef4444;
@@ -194,8 +194,9 @@
             background-color: #fee2e2;
         }
 
+        /* When a restricted home button is clicked/active, keep it clear it's selected */
         .opt-btn.home.restricted.active {
-            background-color: #fef2f2;
+            background-color: #fee2e2;
             border-color: #dc2626;
             color: #dc2626;
             box-shadow: 0 1px 3px rgba(220, 38, 38, 0.15);
@@ -331,10 +332,7 @@
                 const group = document.querySelector(`[data-day="${day.id}"]`);
                 if (group) {
                     const buttons = group.querySelectorAll('.opt-btn');
-                    buttons.forEach(btn => {
-                        btn.classList.remove('active');
-                        // Do not clear the restricted class here so it persists across resets if set
-                    });
+                    buttons.forEach(btn => btn.classList.remove('active'));
                 }
             });
             for (let key in schedule) {

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>דיווח משמרות שבועי</title>
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -544,6 +547,7 @@
 
             try {
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`);
+                if (!response.ok) throw new Error('Network response was not ok');
                 const result = await response.json();
                 
                 if (result.restricted === true || String(result.colB).trim() === "לא") {
@@ -555,25 +559,28 @@
                 }
 
                 if (result.status === 'success' && result.schedule) {
-                    for (const [dayId, type] of Object.entries(result.schedule)) {
-                        if (type) {
-                            const group = document.querySelector(`[data-day="${dayId}"]`);
-                            if (group) {
-                                const selectedBtn = group.querySelector(`.${type}`);
-                                if (selectedBtn) {
-                                    selectedBtn.classList.add('active');
-                                    const textMap = { 'office': 'משרד', 'home': 'בית', 'night': 'ערב' };
-                                    schedule[dayId] = textMap[type];
+                    requestAnimationFrame(() => {
+                        for (const [dayId, type] of Object.entries(result.schedule)) {
+                            if (type) {
+                                const group = document.querySelector(`[data-day="${dayId}"]`);
+                                if (group) {
+                                    const selectedBtn = group.querySelector(`.${type}`);
+                                    if (selectedBtn) {
+                                        selectedBtn.classList.add('active');
+                                        const textMap = { 'office': 'משרד', 'home': 'בית', 'night': 'ערב' };
+                                        schedule[dayId] = textMap[type];
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
                 }
 
                 document.getElementById('infoBtn').style.display = 'flex';
 
             } catch (error) {
                 console.error('Error fetching schedule:', error);
+                alert('שגיאה בטעינת הנתונים. אנא רענן את האתר ונסה שוב.');
             } finally {
                 spinner.classList.add('hidden');
                 isLoading = false;
@@ -632,10 +639,11 @@
             });
 
             try {
-                await fetch(url);
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Save failed');
             } catch (error) {
                 console.error('Error submitting data:', error);
-                alert('שגיאה בשמירת הנתונים');
+                alert('שגיאה בשמירת הנתונים. אנא רענן את האתר ונסה שוב.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = 'שמור נתונים';
@@ -672,7 +680,7 @@
             const infoContainer = document.getElementById('infoContent');
             
             if (!cachedInfoData) {
-                infoContainer.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.85rem;">לא נמצאו נתונים עבור עובד זה.</div>`;
+                infoContainer.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.85rem;">לא נמצאו נתונים עבור עובד זה. אנא רענן את האתר אם הבעיה נמשכת.</div>`;
                 return;
             }
 

@@ -460,22 +460,27 @@
         let isLoading = false;
         let cachedInfoData = null;
 
-        function initWeekDates() {
+        async function initWeekDates() {
+            try {
+                const response = await fetch(`${scriptURL}?action=getDate`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.dateText) {
+                        document.getElementById('weekDatesRange').innerText = result.dateText;
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to fetch date from F1, falling back to local calculation', e);
+            }
+
             const now = new Date();
-            const dayOfWeek = now.getDay(); // 0 is Sunday, 6 is Saturday
-            
-            // Calculate upcoming Sunday (if today is Sunday, it calculates next Sunday or current? 
-            // "next sunday to saturday" means if today is Saturday/Sunday/etc., we target the upcoming week starting next Sunday).
-            // Let's compute the next Sunday:
-            const nextSunday = new Date(now);
-            const daysUntilNextSunday = (7 - dayOfWeek) % 7;
-            // If today is Sunday, daysUntilNextSunday is 0. If we want *next* Sunday when it's already Sunday, or if Sunday is start of *this* upcoming week:
-            // Standard approach: next Sunday is (7 - dayOfWeek) % 7 days away. If today is Sunday (dayOfWeek === 0), it's either today or 7 days. Usually, reporting for "next week" means looking ahead to the upcoming Sunday.
-            // Let's ensure it always points to the upcoming Sunday:
+            const dayOfWeek = now.getDay();
             let addDays = (7 - dayOfWeek) % 7;
             if (addDays === 0) {
-                addDays = 7; // If today is Sunday, next Sunday is 7 days later
+                addDays = 7;
             }
+            const nextSunday = new Date(now);
             nextSunday.setDate(now.getDate() + addDays);
 
             const nextSaturday = new Date(nextSunday);

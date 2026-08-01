@@ -462,15 +462,27 @@
 
         function initWeekDates() {
             const now = new Date();
-            const dayOfWeek = now.getDay(); 
-            const sunday = new Date(now);
-            sunday.setDate(now.getDate() - dayOfWeek);
+            const dayOfWeek = now.getDay(); // 0 is Sunday, 6 is Saturday
             
-            const saturday = new Date(sunday);
-            saturday.setDate(sunday.getDate() + 6);
+            // Calculate upcoming Sunday (if today is Sunday, it calculates next Sunday or current? 
+            // "next sunday to saturday" means if today is Saturday/Sunday/etc., we target the upcoming week starting next Sunday).
+            // Let's compute the next Sunday:
+            const nextSunday = new Date(now);
+            const daysUntilNextSunday = (7 - dayOfWeek) % 7;
+            // If today is Sunday, daysUntilNextSunday is 0. If we want *next* Sunday when it's already Sunday, or if Sunday is start of *this* upcoming week:
+            // Standard approach: next Sunday is (7 - dayOfWeek) % 7 days away. If today is Sunday (dayOfWeek === 0), it's either today or 7 days. Usually, reporting for "next week" means looking ahead to the upcoming Sunday.
+            // Let's ensure it always points to the upcoming Sunday:
+            let addDays = (7 - dayOfWeek) % 7;
+            if (addDays === 0) {
+                addDays = 7; // If today is Sunday, next Sunday is 7 days later
+            }
+            nextSunday.setDate(now.getDate() + addDays);
+
+            const nextSaturday = new Date(nextSunday);
+            nextSaturday.setDate(nextSunday.getDate() + 6);
             
             const formatDate = (d) => `${d.getDate()}.${d.getMonth() + 1}`;
-            document.getElementById('weekDatesRange').innerText = `${formatDate(sunday)}-${formatDate(saturday)}`;
+            document.getElementById('weekDatesRange').innerText = `${formatDate(nextSunday)}-${formatDate(nextSaturday)}`;
         }
         initWeekDates();
 

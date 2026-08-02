@@ -106,6 +106,7 @@
         .select-wrapper {
             position: relative;
             width: 100%;
+            margin-bottom: 6px;
         }
 
         select {
@@ -140,6 +141,35 @@
             color: #64748b;
             font-size: 0.75rem;
             line-height: 1;
+        }
+
+        .wfh-status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #475569;
+            margin-top: 4px;
+            min-height: 20px;
+        }
+
+        .wfh-badge {
+            font-size: 0.8rem;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        .wfh-badge.yes {
+            background-color: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .wfh-badge.no {
+            background-color: #fef2f2;
+            color: #ef4444;
         }
 
         .loading-container {
@@ -244,23 +274,6 @@
             border-color: #8b5cf6;
             color: #7c3aed;
             box-shadow: 0 1px 3px rgba(124, 58, 237, 0.15);
-        }
-
-        .opt-btn.home.restricted {
-            border-color: #ef4444;
-            color: #ef4444;
-            background-color: #fef2f2;
-        }
-
-        .opt-btn.home.restricted:hover {
-            background-color: #fee2e2;
-        }
-
-        .opt-btn.home.restricted.active {
-            background-color: #fff7ed;
-            border-color: #f97316;
-            color: #f97316;
-            box-shadow: 0 1px 3px rgba(249, 115, 22, 0.15);
         }
 
         .footer-section {
@@ -429,6 +442,10 @@
                         <option value="Youssef Daoud">Youssef Daoud</option>
                     </select>
                 </div>
+                <div class="wfh-status-indicator" id="wfhIndicatorContainer" style="display: none;">
+                    <span>האם מאושר לעבוד מהבית:</span>
+                    <span id="wfhBadge" class="wfh-badge"></span>
+                </div>
                 <div class="loading-container">
                     <div id="loadingSpinner" class="spinner hidden"></div>
                 </div>
@@ -475,7 +492,6 @@
                             return;
                         }
                     } catch (parseErr) {
-                        // If it returns raw text directly
                         if (textData && textData.trim().length > 0 && !textData.includes('<!DOCTYPE html>')) {
                             document.getElementById('weekDatesRange').innerText = textData.trim();
                             return;
@@ -534,16 +550,23 @@
                 delete schedule[key];
             }
             cachedInfoData = null;
+            document.getElementById('wfhIndicatorContainer').style.display = 'none';
         }
 
-        function setHomeButtonRestricted(isRestricted) {
-            document.querySelectorAll('.opt-btn.home').forEach(btn => {
-                if (isRestricted) {
-                    btn.classList.add('restricted');
-                } else {
-                    btn.classList.remove('restricted');
-                }
-            });
+        function updateWfhStatusDisplay(isRestricted) {
+            const indicatorContainer = document.getElementById('wfhIndicatorContainer');
+            const badge = document.getElementById('wfhBadge');
+            
+            // If restricted (colB === "לא"), work from home is NOT allowed -> Red X
+            // If not restricted, work from home IS allowed -> Green V
+            if (isRestricted) {
+                badge.className = 'wfh-badge no';
+                badge.innerText = '✗';
+            } else {
+                badge.className = 'wfh-badge yes';
+                badge.innerText = '✓';
+            }
+            indicatorContainer.style.display = 'flex';
         }
 
         async function fetchEmployeeSchedule() {
@@ -554,7 +577,6 @@
 
             isLoading = true;
             resetUI();
-            setHomeButtonRestricted(false);
             
             const spinner = document.getElementById('loadingSpinner');
             spinner.classList.remove('hidden');
@@ -572,9 +594,8 @@
                 if (!response.ok) throw new Error('Network response was not ok');
                 const result = await response.json();
                 
-                if (result.restricted === true || String(result.colB).trim() === "לא") {
-                    setHomeButtonRestricted(true);
-                }
+                const isRestricted = (result.restricted === true || String(result.colB).trim() === "לא");
+                updateWfhStatusDisplay(isRestricted);
 
                 if (result.info) {
                     cachedInfoData = result.info;

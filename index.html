@@ -474,6 +474,7 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwX4E_lVTSG8KEYlddLimtyS-Gz13O_folJqP-2V5vZL0z2dg69vpPM_TyCteSkzOz28w/exec';
+        const CACHE_PREFIX = 'emp_sched_cache_v1_';
         let isLoading = false;
         let cachedInfoData = null;
         const employeeCache = {};
@@ -599,9 +600,24 @@
             document.getElementById('infoBtn').style.display = 'none';
             resetUI();
 
+            // 1. Check memory cache first
             if (employeeCache[name]) {
                 applyEmployeeData(employeeCache[name]);
                 return;
+            }
+
+            // 2. Check persistent localStorage cache to minimize sheet calls across reloads
+            const cacheKey = CACHE_PREFIX + name;
+            try {
+                const storedLocal = localStorage.getItem(cacheKey);
+                if (storedLocal) {
+                    const parsedResult = JSON.parse(storedLocal);
+                    employeeCache[name] = parsedResult;
+                    applyEmployeeData(parsedResult);
+                    return;
+                }
+            } catch (e) {
+                localStorage.removeItem(cacheKey);
             }
 
             isLoading = true;
@@ -610,7 +626,6 @@
 
             try {
                 const controller = new AbortController();
-                // Increased thinking/timeout window to 20 seconds
                 const timeoutId = setTimeout(() => controller.abort(), 20000);
 
                 const response = await fetch(`${scriptURL}?employee=${encodeURIComponent(name)}`, {
@@ -623,6 +638,10 @@
                 const result = await response.json();
                 
                 employeeCache[name] = result;
+                try {
+                    localStorage.setItem(cacheKey, JSON.stringify(result));
+                } catch (e) {}
+
                 applyEmployeeData(result);
 
             } catch (error) {
@@ -687,6 +706,11 @@
 
             try {
                 await fetch(url, { mode: 'no-cors' });
+                
+                // Invalidate local and memory cache upon saving so next fetch gets fresh data if modified
+                delete employeeCache[name];
+                localStorage.removeItem(CACHE_PREFIX + name);
+
                 alert('הנתונים נשמרו בהצלחה!');
             } catch (error) {
                 console.error('Error submitting data:', error);
